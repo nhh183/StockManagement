@@ -12,12 +12,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import dao.UserDAO;
 import dto.User;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpSession;
 
 /**
  *
  * @author admin
  */
+@WebServlet("/LoginController")
 public class LoginController extends HttpServlet {
 
     /**
@@ -37,14 +39,16 @@ public class LoginController extends HttpServlet {
             String password = request.getParameter("password");
             UserDAO dao = new UserDAO();
             User loginUser = dao.login(userID, password);
-            if(loginUser != null){
-                HttpSession session= request.getSession();
+            if (loginUser != null) {
+                HttpSession session = request.getSession();
                 session.setAttribute("LOGIN_USER", loginUser);
-                request.getRequestDispatcher("stockList.jsp").forward(request, response);
+//                request.getRequestDispatcher("stockList.jsp").forward(request, response);
+                response.sendRedirect("stockList.jsp");
             } else {
                 request.setAttribute("MSG", "Incorrect UserID or Password");
                 request.getRequestDispatcher("login.jsp").forward(request, response);
-            } 
+
+            }
         } catch (Exception e) {
             log(e.getMessage());
         }
@@ -88,5 +92,5 @@ public class LoginController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
+//
 }
