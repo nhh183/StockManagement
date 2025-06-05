@@ -20,6 +20,15 @@ public class TransactionDTO {
     public TransactionDTO() {
     }
 
+    public TransactionDTO(String userID, String ticker, String type, int quantity, float price, String status) {
+        this.userID = userID;
+        this.ticker = ticker;
+        this.type = type;
+        this.quantity = quantity;
+        this.price = price;
+        this.status = status;
+    }
+
     public TransactionDTO(int id, String userID, String ticker, String type, int quantity, float price, String status) {
         this.id = id;
         this.userID = userID;
@@ -29,6 +38,8 @@ public class TransactionDTO {
         this.price = price;
         this.status = status;
     }
+
+    
 
     public int getId() {
         return id;

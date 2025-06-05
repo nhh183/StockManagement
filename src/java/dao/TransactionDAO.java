@@ -34,13 +34,15 @@ public class TransactionDAO {
         return isCreated;
     }
 
-    public ArrayList<TransactionDTO> searchTransaction(String search) throws SQLException {
+    public ArrayList<TransactionDTO> searchTransaction(String search,String userId) throws SQLException {
         ArrayList<TransactionDTO> list = new ArrayList<>();
-        String sql = "SELECT * FROM tblTransactions WHERE ticker LIKE ? OR userID LIKE ? OR status LIKE ?";
-        try ( Connection cnn = DBUtils.getConnection();  PreparedStatement ps = cnn.prepareStatement(sql)) {
+        String sql = "SELECT * FROM tblTransactions WHERE (ticker LIKE ? OR userID LIKE ? OR status LIKE ?) AND userID=?";
+        try ( Connection cnn = DBUtils.getConnection();  
+            PreparedStatement ps = cnn.prepareStatement(sql)) {
             ps.setString(1, '%' + search + '%');
             ps.setString(2, '%' + search + '%');
             ps.setString(3, '%' + search + '%');
+            ps.setString(4, userId);
             try ( ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     int id = rs.getInt("id");
@@ -55,7 +57,7 @@ public class TransactionDAO {
             }
 
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
         return list;
 
@@ -86,7 +88,25 @@ public class TransactionDAO {
         return isDeleted;
     }
     
-    public TransactionDTO getTransactionByID(int TransactionID){
+    public TransactionDTO getTransactionByID(int TransactionID) throws Exception{
+        String sql="SELECT * FROM tblTransaction WHERE id=?";
+        TransactionDTO transaction=null;
+        try ( Connection cnn = DBUtils.getConnection();  PreparedStatement ps = cnn.prepareStatement(sql)) {
+            ps.setInt(1, TransactionID);
+            try ( ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    int id = rs.getInt("id");
+                    String userID = rs.getString("userID");
+                    String ticker = rs.getString("ticker");
+                    String type = rs.getString("type");
+                    int quantity = rs.getInt("quantity");
+                    float price = rs.getFloat("price");
+                    String status = rs.getString("status");
+                    transaction=new TransactionDTO(id, userID, ticker, type, quantity, price, status);
+                }
+            }
+        }
+        return transaction;
         
     }
 }
