@@ -8,7 +8,7 @@ package dto;
  *
  * @author User
  */
-public class TransactionDTO {
+public class Transaction {
     private int id;
     private String userID;
     private String ticker;
@@ -17,10 +17,10 @@ public class TransactionDTO {
     private float price;
     private String status;
 
-    public TransactionDTO() {
+    public Transaction() {
     }
 
-    public TransactionDTO(String userID, String ticker, String type, int quantity, float price, String status) {
+    public Transaction(String userID, String ticker, String type, int quantity, float price, String status) {
         this.userID = userID;
         this.ticker = ticker;
         this.type = type;
@@ -29,7 +29,7 @@ public class TransactionDTO {
         this.status = status;
     }
 
-    public TransactionDTO(int id, String userID, String ticker, String type, int quantity, float price, String status) {
+    public Transaction(int id, String userID, String ticker, String type, int quantity, float price, String status) {
         this.id = id;
         this.userID = userID;
         this.ticker = ticker;

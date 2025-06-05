@@ -5,7 +5,7 @@
 package controller;
 
 import dao.TransactionDAO;
-import dto.TransactionDTO;
+import dto.Transaction;
 import dto.User;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -62,7 +62,7 @@ public class CreateTransactionController extends HttpServlet {
                 request.setAttribute("ERROR", "Status must be 'pending' or 'executed'.");
             } else {
                 TransactionDAO dao = new TransactionDAO();
-                TransactionDTO transaction = new TransactionDTO(loginUser.getUserID(), ticker, type, quantity, price, status);
+                Transaction transaction = new Transaction(loginUser.getUserID(), ticker, type, quantity, price, status);
 
                 if (dao.createTrasaction(transaction)) {
                     request.setAttribute("MSG", "Transaction created successfully.");

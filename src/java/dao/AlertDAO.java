@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package dao;
-import util.DBUtil;
+import utils.DBUtils;
 import dto.Alerts;
 import java.sql.*;
 import java.util.*;
@@ -15,7 +15,7 @@ public class AlertDAO {
      public List<Alerts> getAlertsByUser(String userID, String keyword) throws SQLException {
         List<Alerts> list = new ArrayList<>();
         String sql = "SELECT * FROM tblAlerts WHERE userID = ? AND ticker LIKE ?";
-        try (Connection conn = DBUtil.getConnection();
+        try (Connection conn = DBUtils.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, userID);
             ps.setString(2, "%" + keyword + "%");
@@ -37,7 +37,7 @@ public class AlertDAO {
 
     public boolean createAlert(Alerts alert) throws SQLException {
         String sql = "INSERT INTO tblAlerts (userID, ticker, threshold, direction, status) VALUES (?, ?, ?, ?, ?)";
-        try (Connection conn = DBUtil.getConnection();
+        try (Connection conn = DBUtils.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, alert.getUserID());
             ps.setString(2, alert.getTicker());
@@ -50,7 +50,7 @@ public class AlertDAO {
 
     public Alerts getAlertById(int alertID) throws SQLException {
         String sql = "SELECT * FROM tblAlerts WHERE alertID = ?";
-        try (Connection conn = DBUtil.getConnection();
+        try (Connection conn = DBUtils.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, alertID);
             try (ResultSet rs = ps.executeQuery()) {
@@ -71,7 +71,7 @@ public class AlertDAO {
 
     public boolean updateAlert(Alerts alert) throws SQLException {
         String sql = "UPDATE tblAlerts SET threshold = ?, direction = ?, status = ? WHERE alertID = ?";
-        try (Connection conn = DBUtil.getConnection();
+        try (Connection conn = DBUtils.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setDouble(1, alert.getThreshold());
             ps.setString(2, alert.getDirection());
@@ -83,7 +83,7 @@ public class AlertDAO {
 
     public boolean deleteAlert(int alertID) throws SQLException {
         String sql = "DELETE FROM tblAlerts WHERE alertID = ?";
-        try (Connection conn = DBUtil.getConnection();
+        try (Connection conn = DBUtils.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, alertID);
             return ps.executeUpdate() > 0;
@@ -92,7 +92,7 @@ public class AlertDAO {
     public List<Alerts> searchAll(String keyword) throws SQLException {
     List<Alerts> list = new ArrayList<>();
     String sql = "SELECT * FROM tblAlerts WHERE ticker LIKE ? OR userID LIKE ?";
-    try (Connection conn = DBUtil.getConnection();
+    try (Connection conn = DBUtils.getConnection();
          PreparedStatement ps = conn.prepareStatement(sql)) {
         ps.setString(1, "%" + keyword + "%");
         ps.setString(2, "%" + keyword + "%");

@@ -1,13 +1,12 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ page import="javax.servlet.http.*, javax.servlet.*" %>
+<%@ page import="javax.servlet.http.*, javax.servlet.*, dto.User" %>
 <%
-    HttpSession session = request.getSession(false);
-    if (session == null || session.getAttribute("LOGIN_USER") == null) {
+    if (session == null || session.getAttribute("USER") == null) {
         response.sendRedirect("login.jsp");
         return;
     }
 
-    dto.User loginUser = (dto.User) session.getAttribute("LOGIN_USER");
+    User loginUser = (User) session.getAttribute("USER");
 %>
 <!DOCTYPE html>
 <html>
@@ -15,11 +14,30 @@
     <title>Welcome</title>
 </head>
 <body>
-    <h2>🎉 welcome <%= loginUser.getFullName() %>!</h2>
+    <h2>Welcome <%= loginUser.getFullName() %>!</h2>
+    <form action="transactionList.jsp" method="get">
+        <div class="button">
+           <input type="submit" value="View Transaction">
+        </div>
+   </form>
 
-    <ul>
-        <li><a href="stockList.jsp"> Stock manager (stockList)</a></li>
-        <li><a href="logout"> logout</a></li>
-    </ul>
+   <form action="alertList.jsp" method="get" >
+        <div class="button">
+            <input type="submit" value="View Alert">
+        </div>
+   </form>
+    <form action="userList.jsp" method="get" >
+        <div class="button">
+            <input type="submit" value="View User">
+        </div>
+   </form>
+    <div class="stocks">
+        <jsp:include page="stockList.jsp" />
+    </div>
+   <form action="MainController" method="get">
+        <div class="button">
+            <input type="submit" name="action" value="Logout">
+         </div>
+   </form>
 </body>
 </html>

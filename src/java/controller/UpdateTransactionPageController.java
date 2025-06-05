@@ -6,7 +6,7 @@
 package controller;
 
 import dao.TransactionDAO;
-import dto.TransactionDTO;
+import dto.Transaction;
 import dto.User;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -42,7 +42,7 @@ public class UpdateTransactionPageController extends HttpServlet {
     try {
         int id = Integer.parseInt(request.getParameter("id"));
         TransactionDAO dao = new TransactionDAO();
-        TransactionDTO transaction = dao.getTransactionByID(id);
+        Transaction transaction = dao.getTransactionByID(id);
 
         if (transaction == null) {
             request.setAttribute("ERROR", "Transaction not found.");

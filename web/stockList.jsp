@@ -8,9 +8,14 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <div class="stocks">
-    <table>
+    <form action="MainController" method="POST">
+        <input type="text" name="search" placeholder="Search by ticker, name or sector...">
+        <button type="submit" name="action" value="search">Search</button>
+    </form>
+    <table border="1">
         <thead>
             <tr>
+                <th>No</th>
                 <th>Ticker</th>
                 <th>Name</th>
                 <th>Sector</th>
@@ -20,18 +25,28 @@
             </tr>
         </thead>
         <tbody>
+            <%
+                int count = 0;
+            %>
             <c:forEach var="stock" items="${stocks}">
+                <%count++;%>
                 <tr>
+                    <td><%= count%></td>
                     <td>${stock.getTicker()}</td>
                     <td>${stock.getName()}</td>
                     <td>${stock.getSector()}</td>
                     <td>${stock.getPrice()}</td>
                     <td>${stock.isStatus()?"Active":"Inactive"}</td>
-                    <td><a href="updateStock.jsp?ticker=${stonk.getTicker()}">edit</a>/<a href="">delete</a> </td>
+                    <td><a href="MainController?action=update&ticker=${stock.getTicker()}">edit</a>/
+                       <a href="MainController?action=delete&ticker=${stock.getTicker()}" onclick="return confirm('Are you sure you want to delete this stock?')">delete</a>
+                    </td>
                 </tr>
             </c:forEach>
 
         </tbody>
     </table>
-    
+    <form action="MainController" method="POST">
+        <button type="submit" name="action" value="create">Create</button>
+    </form>
 </div>
+            

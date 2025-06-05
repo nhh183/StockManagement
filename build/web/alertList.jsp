@@ -6,7 +6,7 @@
 
 <%@page import="dto.Alerts"%>
 <%@page import="java.util.ArrayList"%>
-<%@page import="dto.Users"%>
+<%@page import="dto.User"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -14,7 +14,7 @@
 <body>
 
 <%
-    Users loginUser = (Users) session.getAttribute("LOGIN_USER");
+    User loginUser = (User) session.getAttribute("USER");
     if (loginUser == null) {
         response.sendRedirect("login.jsp");
         return;
@@ -29,7 +29,7 @@
     <button type="submit" name="action" value="SearchAlert">Search</button>
 </form>
 
-<a href="createAlert.jsp">Create New Alert</a><br>
+<a href="addAlert.jsp">Create New Alert</a><br>
 <a href="transactionList.jsp">Transaction History</a><br>
 <a href="stockList.jsp">Stock List</a><br>
 

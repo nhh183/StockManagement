@@ -5,7 +5,7 @@
 --%>
 
 <%@page import="java.util.ArrayList"%>
-<%@page import="dto.TransactionDTO" %>
+<%@page import="dto.Transaction" %>
 <%@page import="dto.User" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -16,7 +16,7 @@
     </head>
     <body>
         <%
-            User loginUser = (User) session.getAttribute("LOGIN_USER");
+            User loginUser = (User) session.getAttribute("USER");
             if (loginUser == null) {
                 response.sendRedirect("login.jsp");
                 return;
@@ -46,7 +46,7 @@
         <% } %>
 
         <%
-            ArrayList<TransactionDTO> list = (ArrayList<TransactionDTO>) request.getAttribute("list");
+            ArrayList<Transaction> list = (ArrayList<Transaction>) request.getAttribute("list");
             if (list != null && !list.isEmpty()) {
         %>
         <table border="1">
@@ -64,7 +64,7 @@
             </tr>
             <%
                 int count = 0;
-                for (TransactionDTO transaction : list) {
+                for (Transaction transaction : list) {
                     count++;
             %>
             <tr>

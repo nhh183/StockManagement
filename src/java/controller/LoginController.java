@@ -4,6 +4,7 @@
  */
 package controller;
 
+import dao.StockDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -11,9 +12,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import dao.UserDAO;
+import dto.Stock;
 import dto.User;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
 
 /**
  *
@@ -40,9 +43,12 @@ public class LoginController extends HttpServlet {
             String password = request.getParameter("password");
             UserDAO dao = new UserDAO();
             User loginUser = dao.login(userID, password);
+            StockDAO stockDAO = new StockDAO();
+            ArrayList<Stock> stockList = stockDAO.getStockList();
             if(loginUser != null){
                 HttpSession session= request.getSession();
-                session.setAttribute("LOGIN_USER", loginUser);
+                session.setAttribute("USER", loginUser);
+                request.setAttribute("stocks",stockList);
                 request.getRequestDispatcher("welcome.jsp").forward(request, response);
             } else {
                 request.setAttribute("MSG", "Incorrect UserID or Password");

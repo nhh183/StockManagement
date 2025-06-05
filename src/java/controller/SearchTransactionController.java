@@ -5,7 +5,7 @@
 package controller;
 
 import dao.TransactionDAO;
-import dto.TransactionDTO;
+import dto.Transaction;
 import dto.User;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
@@ -35,7 +35,7 @@ public class SearchTransactionController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        User loginUser = (User) request.getSession().getAttribute("LOGIN_USER");
+        User loginUser = (User) request.getSession().getAttribute("USER");
         if (loginUser == null) {
             response.sendRedirect("login.jsp");
             return;
@@ -44,7 +44,7 @@ public class SearchTransactionController extends HttpServlet {
             String keyword = request.getParameter("keyword") != null ? request.getParameter("keyword") : "";
             keyword=keyword.trim();
             TransactionDAO dao = new TransactionDAO();
-            List<TransactionDTO> list = dao.searchTransaction(keyword, loginUser.getUserID());
+            List<Transaction> list = dao.searchTransaction(keyword, loginUser.getUserID());
             request.setAttribute("list", list);
             request.setAttribute("keyword", keyword);
 

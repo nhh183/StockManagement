@@ -4,7 +4,7 @@
  */
 package dao;
 
-import dto.TransactionDTO;
+import dto.Transaction;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,7 +18,7 @@ import utils.DBUtils;
  */
 public class TransactionDAO {
 
-    public boolean createTrasaction(TransactionDTO transaction) throws SQLException {
+    public boolean createTrasaction(Transaction transaction) throws SQLException {
         String sql = "INSERT INTO tblTransactions(UserID, ticker, type, quantity, price, status) VALUES(?,?,?,?,?,?)";
         boolean isCreated = false;
         try ( Connection cnn = DBUtils.getConnection();  PreparedStatement ps = cnn.prepareStatement(sql);) {
@@ -34,8 +34,8 @@ public class TransactionDAO {
         return isCreated;
     }
 
-    public ArrayList<TransactionDTO> searchTransaction(String search,String userId) throws SQLException {
-        ArrayList<TransactionDTO> list = new ArrayList<>();
+    public ArrayList<Transaction> searchTransaction(String search,String userId) throws SQLException {
+        ArrayList<Transaction> list = new ArrayList<>();
         String sql = "SELECT * FROM tblTransactions WHERE (ticker LIKE ? OR userID LIKE ? OR status LIKE ?) AND userID=?";
         try ( Connection cnn = DBUtils.getConnection();  
             PreparedStatement ps = cnn.prepareStatement(sql)) {
@@ -52,7 +52,7 @@ public class TransactionDAO {
                     int quantity = rs.getInt("quantity");
                     float price = rs.getFloat("price");
                     String status = rs.getString("status");
-                    list.add(new TransactionDTO(id, userID, ticker, type, quantity, price, status));
+                    list.add(new Transaction(id, userID, ticker, type, quantity, price, status));
                 }
             }
 
@@ -63,7 +63,7 @@ public class TransactionDAO {
 
     }
 
-    public boolean updateTransaction(TransactionDTO transaction) throws Exception {
+    public boolean updateTransaction(Transaction transaction) throws Exception {
         String sql = "UPDATE tblTransactions SET ticker=?,type=?,quantity=?,price=?,status=? WHERE id=?";
         boolean isUpdated = false;
         try ( Connection cnn = DBUtils.getConnection();  PreparedStatement ps = cnn.prepareStatement(sql)) {
@@ -88,9 +88,9 @@ public class TransactionDAO {
         return isDeleted;
     }
     
-    public TransactionDTO getTransactionByID(int TransactionID) throws Exception{
+    public Transaction getTransactionByID(int TransactionID) throws Exception{
         String sql="SELECT * FROM tblTransaction WHERE id=?";
-        TransactionDTO transaction=null;
+        Transaction transaction=null;
         try ( Connection cnn = DBUtils.getConnection();  PreparedStatement ps = cnn.prepareStatement(sql)) {
             ps.setInt(1, TransactionID);
             try ( ResultSet rs = ps.executeQuery()) {
@@ -102,7 +102,7 @@ public class TransactionDAO {
                     int quantity = rs.getInt("quantity");
                     float price = rs.getFloat("price");
                     String status = rs.getString("status");
-                    transaction=new TransactionDTO(id, userID, ticker, type, quantity, price, status);
+                    transaction=new Transaction(id, userID, ticker, type, quantity, price, status);
                 }
             }
         }

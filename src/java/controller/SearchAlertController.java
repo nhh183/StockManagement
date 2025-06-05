@@ -28,7 +28,7 @@ public class SearchAlertController extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession();
-        Users loginUser = (Users) session.getAttribute("LOGIN_USER");
+        Users loginUser = (Users) session.getAttribute("USER");
 
         if (loginUser == null) {
             response.sendRedirect("login.jsp");

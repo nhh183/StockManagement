@@ -10,14 +10,20 @@ import java.sql.SQLException;
 
 /**
  *
- * @author admin
+ * @author loan1
  */
 public class DBUtils {
-    public static final Connection getConnection() throws ClassNotFoundException, SQLException{
-        Connection conn= null;
-        Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-        String url= "jdbc:sqlserver://localhost:1433;databaseName=FinanceMarketManagement";
-        conn= DriverManager.getConnection(url, "sa", "12345");
-        return conn;
+    private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=FinanceMarketManagement";
+    private static final String USER = "sa";
+    private static final String PASSWORD = "12345";
+
+    public static Connection getConnection() throws SQLException {
+        try {
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            return DriverManager.getConnection(URL, USER, PASSWORD);
+        } catch (ClassNotFoundException e) {
+            throw new SQLException("JDBC Driver not found", e);
+        }
     }
 }
+

@@ -5,7 +5,7 @@
 package controller;
 
 import dao.TransactionDAO;
-import dto.TransactionDTO;
+import dto.Transaction;
 import dto.User;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -47,7 +47,7 @@ public class UpdateTransactionController extends HttpServlet {
             }
             int transactionID = Integer.parseInt(request.getParameter("transactionID"));
             TransactionDAO dao = new TransactionDAO();
-            TransactionDTO transaction = dao.getTransactionByID(transactionID);
+            Transaction transaction = dao.getTransactionByID(transactionID);
             if (transaction == null) {
                 request.setAttribute("MSG", "Transaction is not available!");
                 url=TRANSACTION_LIST_PAGE;
