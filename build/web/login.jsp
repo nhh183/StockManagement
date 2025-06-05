@@ -3,12 +3,12 @@
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng nhập</title>
+    <title></title>
 </head>
 <body>
-    <h2>Đăng nhập hệ thống</h2>
+    <h2></h2>
     <% if(request.getAttribute("error") != null){ %>
-        <p style="color: red;"><%= request.getAttribute%></p>
+        <p style="color: red;"><%= request.getAttribute("error")%></p>
     <%}%>
     <form action="LoginController" method="post">
         UserID: <input type="text" name="userID" required><br>

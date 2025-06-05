@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controllers;
+package controller;
 
 import dao.TransactionDAO;
 import dto.TransactionDTO;
@@ -19,10 +19,11 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  * @author User
  */
-@WebServlet(name = "deleteTransactionController", urlPatterns = {"/deleteTransactionController"})
-public class deleteTransactionController extends HttpServlet {
+@WebServlet(name = "CreateTransactionController", urlPatterns = {"/CreateTransactionController"})
+public class CreateTransactionController extends HttpServlet {
 
     private static final String TRANSACTION_LIST_PAGE = "transactionList.jsp";
+    private static final String CREATE_TRANSACTION_PAGE = "addTransaction.jsp";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -37,7 +38,7 @@ public class deleteTransactionController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
-        String url = TRANSACTION_LIST_PAGE;
+        String url = CREATE_TRANSACTION_PAGE;
 
         User loginUser = (User) request.getSession().getAttribute("LOGIN_USER");
         if (loginUser == null) {
@@ -45,21 +46,31 @@ public class deleteTransactionController extends HttpServlet {
             return;
         }
         try {
-            int id = Integer.parseInt(request.getParameter("id"));
-            TransactionDAO dao = new TransactionDAO();
-            TransactionDTO transaction = dao.getTransactionByID(id);
-            if (transaction == null) {
-                request.setAttribute("ERROR", "Transaction not found.");
+            String ticker = request.getParameter("ticker");
+            String type = request.getParameter("type");
+            int quantity = Integer.parseInt(request.getParameter("quantity"));
+            float price = Float.parseFloat(request.getParameter("price"));
+            String status = request.getParameter("status");
+
+            if (ticker.isEmpty() || type.isEmpty() || status.isEmpty()) {
+                request.setAttribute("ERROR", "Please fill in all required fields.");
+            } else if (quantity <= 0 || price <= 0) {
+                request.setAttribute("ERROR", "Quantity and price must be greater than 0.");
+            } else if (!type.equals("buy") && !type.equals("sell")) {
+                request.setAttribute("ERROR", "Transaction type must be 'buy' or 'sell'.");
+            } else if (!status.equals("pending") && !status.equals("executed")) {
+                request.setAttribute("ERROR", "Status must be 'pending' or 'executed'.");
             } else {
-                if (!transaction.getUserID().equals(loginUser.getUserID()) && !loginUser.getRoleID().equals("AD")) {
-                    request.setAttribute("ERROR", "You do not have permission to delete this transaction.");
-                } else if (dao.deleteTransaction(id)) {
-                    request.setAttribute("MSG", "Transaction deleted successfully.");
+                TransactionDAO dao = new TransactionDAO();
+                TransactionDTO transaction = new TransactionDTO(loginUser.getUserID(), ticker, type, quantity, price, status);
+
+                if (dao.createTrasaction(transaction)) {
+                    request.setAttribute("MSG", "Transaction created successfully.");
+                    url = TRANSACTION_LIST_PAGE;
                 } else {
-                    request.setAttribute("ERROR", "Failed to delete the transaction.");
+                    request.setAttribute("ERROR", "Failed to create transaction.");
                 }
             }
-
         } catch (Exception e) {
             request.setAttribute("ERROR", "An error occurred: " + e.getMessage());
         }
@@ -67,7 +78,7 @@ public class deleteTransactionController extends HttpServlet {
 
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *

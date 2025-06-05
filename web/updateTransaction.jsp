@@ -23,14 +23,8 @@
 
         <h2>Update Transaction Information</h2>
 
-        <% 
-            String MSG = (String) request.getAttribute("MESSAGE");
-            String ERROR = (String) request.getAttribute("ERROR");
-            if (MSG != null) {
-        %>
-        <p style="color: green"><%= MSG %></p>
-        <% } else if (ERROR != null) { %>
-        <p style="color: red"><%= ERROR %></p>
+        <% if (request.getAttribute("ERROR") != null) { %>
+        <p style="color:red"><%= request.getAttribute("ERROR") %></p>
         <% } %>
 
         <form action="MainController" method="POST">
