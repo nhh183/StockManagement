@@ -38,10 +38,10 @@ public class MainController extends HttpServlet {
 
         try {
             switch (action) {
-                case "login":
+                case "Login":
                     url = "LoginController";
                     break;
-                case "logout":
+                case "Logout":
                     url = "LogoutController";
                     break;
                 case "addUser":

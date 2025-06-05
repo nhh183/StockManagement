@@ -12,12 +12,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import dao.UserDAO;
 import dto.User;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpSession;
 
 /**
  *
  * @author admin
  */
+@WebServlet(name = "LoginController", urlPatterns = {"/LoginController"})
 public class LoginController extends HttpServlet {
 
     /**
@@ -42,7 +44,7 @@ public class LoginController extends HttpServlet {
                 session.setAttribute("LOGIN_USER", loginUser);
                 request.getRequestDispatcher("stockList.jsp").forward(request, response);
             } else {
-                request.setAttribute("MSG", "Incorrect UserID or Password");
+                request.setAttribute("error", "Incorrect UserID or Password");
                 request.getRequestDispatcher("login.jsp").forward(request, response);
             } 
         } catch (Exception e) {

@@ -7,10 +7,10 @@
     <head><title>User list</title></head>
     <body>
         <h2> Users List</h2>
-        <form action="userList" method="get">
+        <form action="MainController" method="get">
             find User by ID: 
             <input type="text" name="keyword" value="<%= request.getParameter("keyword") != null ? request.getParameter("keyword") : "" %>">
-            <input type="submit" value="filter">
+            <button type="submit" name="action" value="SearchUser">Search</button>
         </form>
         <table border="1">
             <tr><th>UserID</th><th>FullName</th><th>RoleID</th><th>Action</th></tr>
