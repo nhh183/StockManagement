@@ -23,14 +23,13 @@
             }
         %>
         <h1>Welcome: <%= loginUser.getFullName() %></h1>
-
+        <a href="MainController?action=Logout">Logout</a><br/>
         <form action="MainController" method="POST">
-            <button type="submit" name="action" value="Logout">Logout</button>
             <input type="text" name="keyword" placeholder="Search"/>
             <button type="submit" name="action" value="SearchTransaction">Search</button>
         </form>
 
-        <a href="createTransaction.jsp">Add New Transaction</a><br/>
+        <a href="addTransaction.jsp">Add New Transaction</a><br/>
         <a href="stockList.jsp">Go to Stock List</a><br/>
         <a href="alertList.jsp">Go to Alert List</a><br/>
 
@@ -87,7 +86,7 @@
         <% } else { %>
         <p>No transactions found.</p>
         <% } %>
-        <a href="MainController?action=addTransaction">Add Transaction</a>
+        
     </body>
 </html>
 

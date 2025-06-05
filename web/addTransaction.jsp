@@ -27,7 +27,7 @@
                 <option value="pending">Pending</option>
                 <option value="executed">Executed</option>
             </select><br>
-            <input type="submit" name="action" value="createTransaction">
+            <input type="submit" name="action" value="createTransaction"><br/>
             <a href="transactionList.jsp">Back to Transaction List</a>
         </form>
     </body>

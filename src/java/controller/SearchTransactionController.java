@@ -7,12 +7,14 @@ package controller;
 import dao.TransactionDAO;
 import dto.TransactionDTO;
 import dto.User;
+import dto.Users;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,15 +36,15 @@ public class SearchTransactionController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        User loginUser = (User) request.getSession().getAttribute("LOGIN_USER");
+        HttpSession session = request.getSession();
+        User loginUser = (User) session.getAttribute("LOGIN_USER");
         if (loginUser == null) {
             response.sendRedirect("login.jsp");
             return;
         }
         try {
             String keyword = request.getParameter("keyword") != null ? request.getParameter("keyword") : "";
-            keyword=keyword.trim();
+            keyword = keyword.trim();
             TransactionDAO dao = new TransactionDAO();
             List<TransactionDTO> list = dao.searchTransaction(keyword, loginUser.getUserID());
             request.setAttribute("list", list);
