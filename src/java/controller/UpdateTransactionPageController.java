@@ -22,7 +22,8 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 @WebServlet(name="UpdateTransactionPageController", urlPatterns={"/UpdateTransactionPageController"})
 public class UpdateTransactionPageController extends HttpServlet {
-   
+   private static final String TRANSACTION_LIST_PAGE = "transactionList.jsp";
+    private static final String UPDATE_TRANSACTION_PAGE = "updateTransaction.jsp";
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -33,6 +34,7 @@ public class UpdateTransactionPageController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        String url=UPDATE_TRANSACTION_PAGE;
        User loginUser = (User) request.getSession().getAttribute("LOGIN_USER");
     if (loginUser == null) {
         response.sendRedirect("login.jsp");
@@ -46,9 +48,11 @@ public class UpdateTransactionPageController extends HttpServlet {
 
         if (transaction == null) {
             request.setAttribute("ERROR", "Transaction not found.");
+            url=TRANSACTION_LIST_PAGE;
         } else {
             if (!transaction.getUserID().equals(loginUser.getUserID()) && !"AD".equals(loginUser.getRoleID())) {
                 request.setAttribute("ERROR", "You do not have permission to update this transaction.");
+                url=TRANSACTION_LIST_PAGE;
             } else {
                 request.setAttribute("TRANSACTION", transaction);
             }
@@ -58,7 +62,7 @@ public class UpdateTransactionPageController extends HttpServlet {
         request.setAttribute("ERROR", "An error occurred: " + e.getMessage());
     }
 
-    request.getRequestDispatcher("updateTransaction.jsp").forward(request, response);
+    request.getRequestDispatcher(url).forward(request, response);
     } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

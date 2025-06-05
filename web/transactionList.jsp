@@ -30,7 +30,7 @@
             <button type="submit" name="action" value="SearchTransaction">Search</button>
         </form>
 
-        <a href="createTransaction.jsp">Create New Transaction</a><br/>
+        <a href="createTransaction.jsp">Add New Transaction</a><br/>
         <a href="stockList.jsp">Go to Stock List</a><br/>
         <a href="alertList.jsp">Go to Alert List</a><br/>
 
@@ -77,8 +77,8 @@
                 <td><%= transaction.getStatus() %></td>
                 <% if ("AD".equals(loginUser.getRoleID()) || loginUser.getUserID().equals(transaction.getUserID())) { %>
                 <td>
-                    <a href="MainController?action=updateTransactionPageController&id=<%= transaction.getId() %>">Update</a>
-                    <a href="deleteTransactionController?id=<%= transaction.getId() %>">Delete</a>
+                    <a href="MainController?action=updateTransaction&id=<%= transaction.getId() %>">Update</a>
+                    <a href="MainController?action=deleteTransaction?id=<%= transaction.getId() %>">Delete</a>
                 </td>
                 <% } %>
             </tr>
@@ -87,7 +87,7 @@
         <% } else { %>
         <p>No transactions found.</p>
         <% } %>
-
+        <a href="MainController?action=addTransaction">Add Transaction</a>
     </body>
 </html>
 
