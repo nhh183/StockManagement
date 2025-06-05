@@ -43,12 +43,20 @@ public class LoginController extends HttpServlet {
             String password = request.getParameter("password");
             UserDAO dao = new UserDAO();
             User loginUser = dao.login(userID, password);
+<<<<<<< Updated upstream
             StockDAO stockDAO = new StockDAO();
             ArrayList<Stock> stockList = stockDAO.getStockList();
             if(loginUser != null){
                 HttpSession session= request.getSession();
                 session.setAttribute("USER", loginUser);
                 request.setAttribute("stocks",stockList);
+=======
+            Stock
+            if(loginUser != null){
+                HttpSession session= request.getSession();
+                session.setAttribute("USER", loginUser);
+                request.setAttribute("stocks",);
+>>>>>>> Stashed changes
                 request.getRequestDispatcher("welcome.jsp").forward(request, response);
             } else {
                 request.setAttribute("MSG", "Incorrect UserID or Password");

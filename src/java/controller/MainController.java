@@ -25,6 +25,7 @@ public class MainController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+<<<<<<< Updated upstream
     
     private final String LOGIN = "login";
     private final String LOGOUT="logout";
@@ -107,6 +108,22 @@ public class MainController extends HttpServlet {
             System.err.println(ex);
         }finally{
             request.getRequestDispatcher(url).forward(request, response);
+=======
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet MainController</title>");  
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet MainController at " + request.getContextPath () + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
+>>>>>>> Stashed changes
         }
     } 
 
