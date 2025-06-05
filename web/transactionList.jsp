@@ -41,7 +41,7 @@
             if (MSG != null) {
         %>
         <p style="color: green"><%= MSG %></p>
-        <% } else if (error != null) { %>
+        <% } else if (ERROR != null) { %>
         <p style="color: red"><%= ERROR %></p>
         <% } %>
 
