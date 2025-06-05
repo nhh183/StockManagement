@@ -37,20 +37,5 @@ public class User {
         return password;
     }
 
-    public void setUserID(String userID) {
-        this.userID = userID;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public void setRoleID(String roleID) {
-        this.roleID = roleID;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-    
+        
 }
