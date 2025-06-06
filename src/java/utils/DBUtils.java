@@ -13,7 +13,7 @@ import java.sql.SQLException;
  * @author loan1
  */
 public class DBUtils {
-    private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=FinanceMarketManagement";
+    private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=StockManagement";
     private static final String USER = "sa";
     private static final String PASSWORD = "12345";
 

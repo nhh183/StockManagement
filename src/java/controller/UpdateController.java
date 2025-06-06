@@ -56,7 +56,6 @@ public class UpdateController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         String ticker = request.getParameter("ticker");
-        System.out.println(ticker);
         StockDAO stockDAO = new StockDAO();
         Stock stock = stockDAO.getStockByTicker(ticker);
         request.setAttribute("stock", stock);

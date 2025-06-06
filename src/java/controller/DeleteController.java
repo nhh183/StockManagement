@@ -34,6 +34,7 @@ public class DeleteController extends HttpServlet {
         String ticker = request.getParameter("ticker");
         StockDAO stockDAO = new StockDAO();
         try{
+            System.out.println(ticker);
             stockDAO.delete(ticker);
         }catch(Exception e){
             System.out.println(e.getMessage());
