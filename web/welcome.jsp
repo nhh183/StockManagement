@@ -10,41 +10,33 @@
 %>
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Welcome</title>
-    <link rel="stylesheet" href="style.css"/>
-</head>
-<body>
-    <h2>Welcome <%= loginUser.getFullName() %>!</h2>
-<<<<<<< HEAD
-    <form action="MainController" method="get">
-=======
-    <div class="menu">
-        <form action="transactionList.jsp" method="get">
->>>>>>> master
-        <div class="button">
-            <button type="submit" name="action" value="TransactionList">View Transaction</button>
-        </div>
-       </form>
+    <head>
+        <title>Welcome</title>
+    </head>
+    <body>
+        <h2>Welcome <%= loginUser.getFullName() %>!</h2>
+        <form action="MainController" method="get">
+            <div class="button">
+                <button type="submit" name="action" value="TransactionList">View Transaction</button>
+            </div>
+        </form>
 
-       <form action="alertList.jsp" method="get" >
+        <form action="alertList.jsp" method="get" >
             <div class="button">
                 <input type="submit" value="View Alert">
             </div>
-       </form>
-        <form action="userList.jsp" method="get" >
+        </form>
+        <form action="MainController" method="get">
+            <input type="hidden" name="action" value="SearchUser" />
+            <button type="submit" class="button-green">User List</button>
+        </form>
+        <div class="stocks">
+            <jsp:include page="stockList.jsp" />
+        </div>
+        <form action="MainController" method="get">
             <div class="button">
-                <input type="submit" value="View User">
+                <input type="submit" name="action" value="Logout">
             </div>
-       </form>
-    </div>
-    <div class="stocks">
-        <jsp:include page="stockList.jsp" />
-    </div>
-   <form action="MainController" method="get">
-        <div class="button">
-            <input type="submit" name="action" value="Logout">
-         </div>
-   </form>
-</body>
+        </form>
+    </body>
 </html>

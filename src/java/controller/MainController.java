@@ -17,21 +17,21 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class MainController extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     private final String LOGIN = "login";
     private final String LOGOUT = "logout";
     private final String SEARCH = "search";
     private final String CREATE = "create";
     private final String UPDATE = "update";
     private final String DELETE = "delete";
+
+    private static final String CREATE_USER = "CreateUser";
+    private static final String CREATE_USER_CONTROLLER = "CreateUserController";
+    private static final String SEARCH_USER = "SearchUser";
+    private static final String SEARCH_USER_CONTROLLER = "SearchUserController";
+    private static final String UPDATE_USER = "UpdateUser";
+    private static final String UPDATE_USER_CONTROLLER = "UpdateUserController";
+    private static final String DELETE_USER = "DeleteUser";
+    private static final String DELETE_USER_CONTROLLER = "DeleteUserController";
 
     private final String SEARCH_TRANSACTION = "SearchTransaction";
     private final String CREATE_TRANSACTION = "CreateTransaction";
@@ -87,6 +87,18 @@ public class MainController extends HttpServlet {
                 case DELETE:
                     url = DELETE_CONTROLLER;
                     break;
+                case SEARCH_USER:
+                    url = SEARCH_USER_CONTROLLER;
+                    break;
+                case CREATE_USER:
+                    url = CREATE_USER_CONTROLLER;
+                    break;
+                case UPDATE_USER:
+                    url = "updateUser.jsp";
+                    break;
+                case DELETE_USER:
+                    url = DELETE_USER_CONTROLLER;
+                    break;
                 case TRANSACTION_LIST:
                     url = TRANSACTION_LIST_CONTROLLER;
                     break;
@@ -119,6 +131,7 @@ public class MainController extends HttpServlet {
             request.getRequestDispatcher(url).forward(request, response);
         }
     }
+
     /**
      * Handles the HTTP <code>GET</code> method.
      *
