@@ -108,6 +108,7 @@
             <% } %>
             <a href="addTransaction.jsp" class="btn-add">Add</a>
         </div>
+
     </body>
 
 

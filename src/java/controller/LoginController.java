@@ -24,8 +24,7 @@ import java.util.ArrayList;
  *
  * @author admin
  */
-
-@WebServlet(name="Login", urlPatterns={"/LoginController"})
+@WebServlet(name = "LoginController", urlPatterns = {"/LoginController"})
 public class LoginController extends HttpServlet {
 
     /**
@@ -53,7 +52,7 @@ public class LoginController extends HttpServlet {
                 request.setAttribute("stocks",stockList);
                 request.getRequestDispatcher("welcome.jsp").forward(request, response);
             } else {
-                request.setAttribute("MSG", "Incorrect UserID or Password");
+                request.setAttribute("error", "Incorrect UserID or Password");
                 request.getRequestDispatcher("login.jsp").forward(request, response);
             } 
         } catch (Exception e) {

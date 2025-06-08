@@ -1,4 +1,5 @@
-<%@ page contentType="text/html; charset=UTF-8" %>
+
+<%@page contentType="text/html; charset=UTF-8" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,14 +7,14 @@
     <title>Login</title>
 </head>
 <body>
-    <h2>Login</h2>
-    <% if (request.getAttribute("MSG") != null) { %>
-        <p style="color: red;"><%= request.getAttribute("error") %></p>
-    <% } %>
+    <h2></h2>
+    <% if(request.getAttribute("error") != null){ %>
+        <p style="color: red;"><%= request.getAttribute("error")%></p>
+    <%}%>
     <form action="MainController" method="post">
         UserID: <input type="text" name="userID" required><br>
         Password: <input type="password" name="password" required><br>
-        <input type="submit" name="action" value="login">
+        <button type="submit" name="action" value="login">Login</button>
     </form>
 </body>
 </html>

@@ -52,6 +52,5 @@
                 <button type="submit" name="action" value="CreateTransaction">Create</button>
             </form>
         </main>
-
     </body>
 </html>
