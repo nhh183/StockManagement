@@ -30,7 +30,7 @@
 </form>
 
 <a href="addAlert.jsp">Create New Alert</a><br>
-<a href="transactionList.jsp">Transaction History</a><br>
+<a href="MainController?action=TransactionList">Transaction List</a><br>
 <a href="stockList.jsp">Stock List</a><br>
 
 <%

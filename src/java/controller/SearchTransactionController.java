@@ -44,8 +44,8 @@ public class SearchTransactionController extends HttpServlet {
             String keyword = request.getParameter("keyword") != null ? request.getParameter("keyword") : "";
             keyword=keyword.trim();
             TransactionDAO dao = new TransactionDAO();
-            List<Transaction> list = dao.searchTransaction(keyword, loginUser.getUserID());
-            request.setAttribute("list", list);
+            List<Transaction> list = dao.searchTransaction(keyword, loginUser.getUserID(),loginUser.getRoleID());
+            request.setAttribute("transactionList", list);
             request.setAttribute("keyword", keyword);
 
             request.getRequestDispatcher("transactionList.jsp").forward(request, response);

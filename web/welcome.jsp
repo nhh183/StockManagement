@@ -15,9 +15,9 @@
 </head>
 <body>
     <h2>Welcome <%= loginUser.getFullName() %>!</h2>
-    <form action="transactionList.jsp" method="get">
+    <form action="MainController" method="get">
         <div class="button">
-           <input type="submit" value="View Transaction">
+            <button type="submit" name="action" value="TransactionList">View Transaction</button>
         </div>
    </form>
 

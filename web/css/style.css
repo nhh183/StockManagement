@@ -1,0 +1,271 @@
+/* RESET CƠ BẢN */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* NAVBAR */
+.navbar {
+    background-color: #004080;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    height: 50px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+/* MENU TRÁI / PHẢI */
+.left-menu,
+.right-menu {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    font-size: 15px;
+    padding: 6px 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.navbar a:hover {
+    background-color: #3366cc;
+}
+
+/* FORM TÌM KIẾM TRONG NAVBAR */
+.navbar form {
+    display: flex;
+    align-items: center;
+}
+
+.navbar input[type="text"] {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px 0 0 4px;
+    font-size: 14px;
+    outline: none;
+    height: 30px;
+}
+
+.navbar button {
+    background-color: #3366cc;
+    border: none;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+    font-size: 14px;
+    height: 30px;
+    transition: background-color 0.3s ease;
+}
+
+.navbar button:hover {
+    background-color: #6699ff;
+}
+
+/* CONTAINER CHÍNH */
+.container {
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* TIÊU ĐỀ CHÀO */
+.center-content {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.center-content h1 {
+    font-size: 32px;
+    color: #004080;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.center-content h2 {
+    font-size: 24px;
+    color: #0066cc;
+    font-weight: 600;
+    margin-top: 0;
+}
+
+/* THÔNG BÁO */
+.msg-success {
+    color: green;
+    font-weight: bold;
+    margin-bottom: 15px;
+    margin-top: 15px;
+    text-align: center;
+}
+
+.msg-error {
+    color: red;
+    font-weight: bold;
+    margin-bottom: 15px;
+    margin-top: 15px;
+    text-align: center;
+}
+
+/* TABLE GIAO DỊCH */
+.transaction-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.transaction-table th,
+.transaction-table td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+}
+
+.transaction-table th {
+    background-color: #004080;
+    color: white;
+}
+
+.transaction-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* DÒNG "NO TRANSACTION" */
+.no-transaction {
+    text-align: center;
+    font-style: italic;
+    color: #888;
+}
+
+/* NÚT ADD */
+.btn-add {
+    display: inline-block;
+    background-color: #004080;
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 8px;
+    text-align: center;
+    margin: 20px auto 0;
+    display: block;
+    transition: background-color 0.3s ease;
+    width: 150px;
+}
+
+.btn-add:hover {
+    background-color: #3366cc;
+}
+
+/* ===== Form Styling RIÊNG (KHÔNG CHỒNG LÊN NAVBAR) ===== */
+main form, /* form trong main hoặc container */
+form.custom-form {
+    background-color: #fff;
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 24px 30px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+main form h2, form.custom-form h2 {
+    text-align: center;
+    margin-bottom: 24px;
+    color: #004080;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+main form label, form.custom-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+    font-size: 15px;
+}
+
+main form input[type="text"],
+main form input[type="number"],
+main form select,
+form.custom-form input[type="text"],
+form.custom-form input[type="number"],
+form.custom-form select {
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 18px;
+    border: 1.5px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+    color: #333;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+main form input[type="text"]:focus,
+main form input[type="number"]:focus,
+main form select:focus,
+form.custom-form input[type="text"]:focus,
+form.custom-form input[type="number"]:focus,
+form.custom-form select:focus {
+    border-color: #004080;
+    box-shadow: 0 0 6px rgba(0, 64, 128, 0.3);
+}
+
+main form button,
+form.custom-form button {
+    width: 100%;
+    padding: 12px 0;
+    background-color: #004080;
+    border: none;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+main form button:hover,
+form.custom-form button:hover {
+    background-color: #3366cc;
+}
+
+main form .btn,
+form.custom-form .btn {
+    display: block;
+    text-align: center;
+    margin-top: 16px;
+    text-decoration: none;
+    color: #004080;
+    font-weight: 700;
+    font-size: 15px;
+    transition: color 0.3s ease;
+}
+
+main form .btn:hover,
+form.custom-form .btn:hover {
+    color: #6699ff;
+    text-decoration: underline;
+}

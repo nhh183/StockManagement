@@ -204,4 +204,19 @@ public class StockDAO {
         }
     }
     
+    public boolean isTickerExist(String ticker) throws SQLException{
+        boolean exist=false;
+        String sql="SELECT ticker FROM tblStocks WHERE ticker=?";
+        try(Connection cnn=DBUtils.getConnection();
+            PreparedStatement ps=cnn.prepareStatement(sql)){
+            ps.setString(1, ticker);
+            try(ResultSet rs=ps.executeQuery()){
+                if(rs.next()){
+                    exist=true;
+                }
+            }
+        }
+        return exist;
+    }
+    
 }

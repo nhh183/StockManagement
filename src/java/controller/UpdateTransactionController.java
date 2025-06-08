@@ -14,6 +14,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
 
 /**
  *
@@ -22,7 +24,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet(name = "UpdateTransactionController", urlPatterns = {"/UpdateTransactionController"})
 public class UpdateTransactionController extends HttpServlet {
 
-    private static final String TRANSACTION_LIST_PAGE = "transactionList.jsp";
+    private static final String TRANSACTION_LIST_CONTROLLER = "TransactionListController";
     private static final String UPDATE_TRANSACTION_PAGE = "updateTransaction.jsp";
 
     /**
@@ -37,56 +39,64 @@ public class UpdateTransactionController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String url=UPDATE_TRANSACTION_PAGE;
+        String url = UPDATE_TRANSACTION_PAGE;
+        HttpSession session = request.getSession();
 
         try {
-            User loginUser = (User) request.getSession().getAttribute("LOGIN_USER");
+            User loginUser = (User) request.getSession().getAttribute("USER");
             if (loginUser == null) {
                 response.sendRedirect("login.jsp");
                 return;
             }
-            int transactionID = Integer.parseInt(request.getParameter("transactionID"));
+            int id = Integer.parseInt(request.getParameter("id"));
             TransactionDAO dao = new TransactionDAO();
-            Transaction transaction = dao.getTransactionByID(transactionID);
+            Transaction transaction = dao.getTransactionByID(id);
             if (transaction == null) {
-                request.setAttribute("MSG", "Transaction is not available!");
-                url=TRANSACTION_LIST_PAGE;
+                session.setAttribute("ERROR", "Transaction is not available!");
+                url = TRANSACTION_LIST_CONTROLLER;
             } else {
                 if (!transaction.getUserID().equals(loginUser.getUserID()) && !loginUser.getRoleID().equals("AD")) {
-                    request.setAttribute("MSG", "Only admin can update transaction status");
-                    url=TRANSACTION_LIST_PAGE;
+                    session.setAttribute("ERROR", "You are not authorized to perform this action.");
+                    url = TRANSACTION_LIST_CONTROLLER;
                 } else {
                     int quantity = Integer.parseInt(request.getParameter("quantity"));
                     float price = Float.parseFloat(request.getParameter("price"));
                     String status = request.getParameter("status");
 
-                    if (quantity <= 0 || price <= 0) {
-                        request.setAttribute("MSG", "Số lượng và giá phải lớn hơn 0!");
+                    if (quantity <= 0) {
+                        request.setAttribute("ERROR", "Quantity must be greater than 0!");
+                    } else if (price <= 0) {
+                        request.setAttribute("ERROR", "Price must be greater than 0!");
                     } else if (!status.equals("pending") && !status.equals("executed")) {
-                        request.setAttribute("MSG", "Trạng thái không hợp lệ!");
+                        request.setAttribute("ERROR", "Status must be 'pending' or 'executed'!");
                     } else {
                         transaction.setQuantity(quantity);
                         transaction.setPrice(price);
                         transaction.setStatus(status);
                         if (dao.updateTransaction(transaction)) {
-                            request.setAttribute("MSG", "Cập nhật thành công!");
-                            url=TRANSACTION_LIST_PAGE;
+                            session.setAttribute("MSG", "Transaction updated successfully!");
+                            url = TRANSACTION_LIST_CONTROLLER;
                         } else {
-                            request.setAttribute("MSG", "Cập nhật thất bại!");
+                            request.setAttribute("ERROR", "Update Transaction failed!");
                         }
                     }
 
                 }
             }
 
-            request.getRequestDispatcher(url).forward(request, response);
-
         } catch (Exception e) {
-            
+            session.setAttribute("ERROR", "An error occurred: " + e.getMessage());
+            url = TRANSACTION_LIST_CONTROLLER;
+        }
+
+        if (url.equals(UPDATE_TRANSACTION_PAGE)) {
+            request.getRequestDispatcher(url).forward(request, response);
+        } else {
+            response.sendRedirect(url);
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -98,7 +108,29 @@ public class UpdateTransactionController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String url = UPDATE_TRANSACTION_PAGE;
+        HttpSession session = request.getSession();
+        try {
+            User loginUser = (User) request.getSession().getAttribute("USER");
+            if (loginUser == null) {
+                response.sendRedirect("login.jsp");
+                return;
+            }
+
+            int id = Integer.parseInt(request.getParameter("id"));
+            TransactionDAO dao = new TransactionDAO();
+            Transaction transaction = dao.getTransactionByID(id);
+            if (transaction == null) {
+                session.setAttribute("ERROR", "Transaction is not availble!");
+                url = TRANSACTION_LIST_CONTROLLER;
+            } else {
+                request.setAttribute("TRANSACTION", transaction);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        request.getRequestDispatcher(url).forward(request, response);
     }
 
     /**

@@ -5,6 +5,7 @@
 package controller;
 
 import dao.StockDAO;
+import dao.TransactionDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import dao.UserDAO;
 import dto.Stock;
+import dto.Transaction;
 import dto.User;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpSession;
