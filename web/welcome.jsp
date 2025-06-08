@@ -12,25 +12,28 @@
 <html>
 <head>
     <title>Welcome</title>
+    <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
     <h2>Welcome <%= loginUser.getFullName() %>!</h2>
-    <form action="transactionList.jsp" method="get">
+    <div class="menu">
+        <form action="transactionList.jsp" method="get">
         <div class="button">
            <input type="submit" value="View Transaction">
         </div>
-   </form>
+       </form>
 
-   <form action="alertList.jsp" method="get" >
-        <div class="button">
-            <input type="submit" value="View Alert">
-        </div>
-   </form>
-    <form action="userList.jsp" method="get" >
-        <div class="button">
-            <input type="submit" value="View User">
-        </div>
-   </form>
+       <form action="alertList.jsp" method="get" >
+            <div class="button">
+                <input type="submit" value="View Alert">
+            </div>
+       </form>
+        <form action="userList.jsp" method="get" >
+            <div class="button">
+                <input type="submit" value="View User">
+            </div>
+       </form>
+    </div>
     <div class="stocks">
         <jsp:include page="stockList.jsp" />
     </div>

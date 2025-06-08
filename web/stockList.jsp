@@ -6,7 +6,7 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
+<link rel="stylesheet" href="style.css"/>
 <div class="stocks">
     <form action="MainController" method="POST">
         <input type="text" name="search" placeholder="Search by ticker, name or sector...">
@@ -37,8 +37,9 @@
                     <td>${stock.getSector()}</td>
                     <td>${stock.getPrice()}</td>
                     <td>${stock.isStatus()?"Active":"Inactive"}</td>
-                    <td><a href="MainController?action=update&ticker=${stock.getTicker()}">edit</a>/
-                       <a href="MainController?action=delete&ticker=${stock.getTicker()}" onclick="return confirm('Are you sure you want to delete this stock?')">delete</a>
+                    <td><a href="MainController?action=update&ticker=${stock.getTicker()}">edit</a> /
+                       <a href="#" onclick="return confirm('Are you sure you want to delete this stock?')">delete</a> 
+                       <!-- MainController?action=delete&ticker=${stock.getTicker()} -->
                     </td>
                 </tr>
             </c:forEach>
