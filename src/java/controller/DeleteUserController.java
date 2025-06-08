@@ -2,11 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-
 package controller;
 
 import dao.UserDAO;
-import dto.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -19,38 +17,36 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  * @author LENOVO
  */
-@WebServlet(name="CreateUserController", urlPatterns={"/CreateUserController"})
-public class CreateUserController extends HttpServlet {
+@WebServlet(name = "DeleteUserController", urlPatterns = {"/DeleteUserController"})
+public class DeleteUserController extends HttpServlet {
     private UserDAO userDAO = new UserDAO();
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
+        String userID = request.getParameter("userID");
+        try {
+            userDAO.deleteUser(userID); // gọi DAO để xóa user
+            request.setAttribute("MSG", "User deleted successfully!");
+        } catch (Exception e) {
+            request.setAttribute("MSG", "User deleted failed!");
+        }
 
-    } 
+        // load lại danh sách người dùng
+        request.getRequestDispatcher("SearchUserController").forward(request, response);
+
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         processRequest(request, response);
-    } 
+    }
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-       String userID = request.getParameter("userID");
-        String fullName = request.getParameter("fullName");
-        String roleID = request.getParameter("roleID");
-        String password = request.getParameter("password");
-        
-        User user = new User(userID, fullName, roleID, password);
-        try {
-            userDAO.createUser(user); // thêm phương thức create vào UserDAO
-            request.setAttribute("MSG", "User Created Successfully!");
-        } catch (Exception e) {
-            request.setAttribute("MSG", "User Created Failed!");
-        }
-
-        // Load lại danh sách
-        request.getRequestDispatcher("SearchUserController").forward(request, response);
+            throws ServletException, IOException {
+        processRequest(request, response);
     }
+
     @Override
     public String getServletInfo() {
         return "Short description";

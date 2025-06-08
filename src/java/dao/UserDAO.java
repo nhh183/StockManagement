@@ -185,4 +185,39 @@ public class UserDAO {
         return null;
     }
 
+    public ArrayList<User> getAllUsers() throws Exception {
+        ArrayList<User> userList = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DBUtils.getConnection(); // chỗ này tuỳ theo project bạn lấy connection sao
+            String sql = "select * from tblUsers";
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                String userID = rs.getString("userID");
+                String fullName = rs.getString("fullName");
+                String roleID = rs.getString("roleID");
+                String password = rs.getString("password");
+
+                User user = new User(userID, fullName, roleID, password);
+                userList.add(user);
+            }
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (ps != null) {
+                ps.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+        return userList;
+    }
+
 }
