@@ -18,7 +18,7 @@ import utils.DBUtils;
  */
 public class TransactionDAO {
 
-    public boolean createTrasaction(Transaction transaction) throws SQLException {
+    public boolean createTransaction(Transaction transaction) throws SQLException {
         String sql = "INSERT INTO tblTransactions(UserID, ticker, type, quantity, price, status) VALUES(?,?,?,?,?,?)";
         boolean isCreated = false;
         try ( Connection cnn = DBUtils.getConnection();  PreparedStatement ps = cnn.prepareStatement(sql);) {
@@ -29,20 +29,54 @@ public class TransactionDAO {
             ps.setFloat(5, transaction.getPrice());
             ps.setString(6, transaction.getStatus());
             isCreated = ps.executeUpdate() > 0;
-        } catch (Exception e) {
         }
         return isCreated;
     }
 
-    public ArrayList<Transaction> searchTransaction(String search,String userId) throws SQLException {
+    public ArrayList<Transaction> getTransactionList(String userId,String roleID) throws SQLException{
+        boolean isAdmin="AD".equals(roleID);
+        ArrayList<Transaction> list=new ArrayList<>();
+        String sql="SELECT * FROM tblTransactions";
+        if(isAdmin==false){
+            sql+=" WHERE userID=?";
+        }
+        try(Connection cnn=DBUtils.getConnection();
+            PreparedStatement ps=cnn.prepareStatement(sql)){
+            if(isAdmin==false){
+                ps.setString(1, userId);
+            }
+            try(ResultSet rs=ps.executeQuery()){
+                while (rs.next()) {
+                    int id = rs.getInt("id");
+                    String userID = rs.getString("userID");
+                    String ticker = rs.getString("ticker");
+                    String type = rs.getString("type");
+                    int quantity = rs.getInt("quantity");
+                    float price = rs.getFloat("price");
+                    String status = rs.getString("status");
+                    list.add(new Transaction(id, userID, ticker, type, quantity, price, status));
+                }
+            }
+        }
+        return list;
+    }
+    
+    public ArrayList<Transaction> searchTransaction(String search,String userId,String roleID) throws SQLException {
+        boolean isAdmin="AD".equals(roleID);
         ArrayList<Transaction> list = new ArrayList<>();
-        String sql = "SELECT * FROM tblTransactions WHERE (ticker LIKE ? OR userID LIKE ? OR status LIKE ?) AND userID=?";
+        
+        String sql = "SELECT * FROM tblTransactions WHERE (ticker LIKE ? OR type LIKE ? OR status LIKE ?)";
+        if(isAdmin==false){
+            sql+=" AND userID=?";
+        }
         try ( Connection cnn = DBUtils.getConnection();  
             PreparedStatement ps = cnn.prepareStatement(sql)) {
             ps.setString(1, '%' + search + '%');
             ps.setString(2, '%' + search + '%');
             ps.setString(3, '%' + search + '%');
-            ps.setString(4, userId);
+            if(isAdmin==false){
+                ps.setString(4, userId);
+            }
             try ( ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     int id = rs.getInt("id");
@@ -63,7 +97,7 @@ public class TransactionDAO {
 
     }
 
-    public boolean updateTransaction(Transaction transaction) throws Exception {
+    public boolean updateTransaction(Transaction transaction) throws SQLException {
         String sql = "UPDATE tblTransactions SET ticker=?,type=?,quantity=?,price=?,status=? WHERE id=?";
         boolean isUpdated = false;
         try ( Connection cnn = DBUtils.getConnection();  PreparedStatement ps = cnn.prepareStatement(sql)) {
@@ -78,7 +112,7 @@ public class TransactionDAO {
         return isUpdated;
     }
 
-    public boolean deleteTransaction(int TransactionID) throws Exception {
+    public boolean deleteTransaction(int TransactionID) throws SQLException {
         String sql = "DELETE FROM tblTransactions WHERE id=?";
         boolean isDeleted = false;
         try ( Connection cnn = DBUtils.getConnection();  PreparedStatement ps = cnn.prepareStatement(sql)) {
@@ -88,13 +122,13 @@ public class TransactionDAO {
         return isDeleted;
     }
     
-    public Transaction getTransactionByID(int TransactionID) throws Exception{
-        String sql="SELECT * FROM tblTransaction WHERE id=?";
-        Transaction transaction=null;
+    public Transaction getTransactionByID(int TransactionID) throws SQLException{
+        String sql="SELECT * FROM tblTransactions WHERE id=?";
+        Transaction result=null;
         try ( Connection cnn = DBUtils.getConnection();  PreparedStatement ps = cnn.prepareStatement(sql)) {
             ps.setInt(1, TransactionID);
             try ( ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
+                if (rs.next()) {
                     int id = rs.getInt("id");
                     String userID = rs.getString("userID");
                     String ticker = rs.getString("ticker");
@@ -102,11 +136,11 @@ public class TransactionDAO {
                     int quantity = rs.getInt("quantity");
                     float price = rs.getFloat("price");
                     String status = rs.getString("status");
-                    transaction=new Transaction(id, userID, ticker, type, quantity, price, status);
+                    result=new Transaction(id, userID, ticker, type, quantity, price, status);
                 }
             }
         }
-        return transaction;
+        return result;
         
     }
 }

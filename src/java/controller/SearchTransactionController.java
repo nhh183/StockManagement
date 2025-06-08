@@ -7,12 +7,14 @@ package controller;
 import dao.TransactionDAO;
 import dto.Transaction;
 import dto.User;
+import dto.Users;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,16 +44,16 @@ public class SearchTransactionController extends HttpServlet {
         }
         try {
             String keyword = request.getParameter("keyword") != null ? request.getParameter("keyword") : "";
-            keyword=keyword.trim();
+            keyword = keyword.trim();
             TransactionDAO dao = new TransactionDAO();
-            List<Transaction> list = dao.searchTransaction(keyword, loginUser.getUserID());
-            request.setAttribute("list", list);
+            List<Transaction> list = dao.searchTransaction(keyword, loginUser.getUserID(), loginUser.getRoleID());
+            request.setAttribute("transactionList", list);
             request.setAttribute("keyword", keyword);
 
-            request.getRequestDispatcher("transactionList.jsp").forward(request, response);
         } catch (Exception e) {
-            log(e.getMessage());
+            request.setAttribute("ERROR", "An error occurred: " + e.getMessage());
         }
+        request.getRequestDispatcher("transactionList.jsp").forward(request, response);
     }
 // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
 

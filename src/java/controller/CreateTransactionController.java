@@ -4,6 +4,7 @@
  */
 package controller;
 
+import dao.StockDAO;
 import dao.TransactionDAO;
 import dto.Transaction;
 import dto.User;
@@ -14,6 +15,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  *
@@ -22,7 +24,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet(name = "CreateTransactionController", urlPatterns = {"/CreateTransactionController"})
 public class CreateTransactionController extends HttpServlet {
 
-    private static final String TRANSACTION_LIST_PAGE = "transactionList.jsp";
+    private static final String TRANSACTION_LIST_CONTROLLER = "TransactionListController";
     private static final String CREATE_TRANSACTION_PAGE = "addTransaction.jsp";
 
     /**
@@ -37,10 +39,11 @@ public class CreateTransactionController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
+        HttpSession session = request.getSession();
         String url = CREATE_TRANSACTION_PAGE;
+        StockDAO stockDAO=new StockDAO();
 
-        User loginUser = (User) request.getSession().getAttribute("LOGIN_USER");
+        User loginUser = (User) request.getSession().getAttribute("USER");
         if (loginUser == null) {
             response.sendRedirect("login.jsp");
             return;
@@ -60,19 +63,25 @@ public class CreateTransactionController extends HttpServlet {
                 request.setAttribute("ERROR", "Transaction type must be 'buy' or 'sell'.");
             } else if (!status.equals("pending") && !status.equals("executed")) {
                 request.setAttribute("ERROR", "Status must be 'pending' or 'executed'.");
+            }else if(!stockDAO.isTickerExist(ticker)){
+                request.setAttribute("ERROR", "Ticker does not exist in the stock list!");
             } else {
                 TransactionDAO dao = new TransactionDAO();
                 Transaction transaction = new Transaction(loginUser.getUserID(), ticker, type, quantity, price, status);
 
-                if (dao.createTrasaction(transaction)) {
-                    request.setAttribute("MSG", "Transaction created successfully.");
-                    url = TRANSACTION_LIST_PAGE;
+                if (dao.createTransaction(transaction)) {
+                    session.setAttribute("MSG", "Transaction created successfully.");
+                    response.sendRedirect(TRANSACTION_LIST_CONTROLLER);
+                    return;
                 } else {
                     request.setAttribute("ERROR", "Failed to create transaction.");
+
                 }
             }
         } catch (Exception e) {
-            request.setAttribute("ERROR", "An error occurred: " + e.getMessage());
+            session.setAttribute("ERROR", "An error occurred: " + e.getMessage());
+            response.sendRedirect(TRANSACTION_LIST_CONTROLLER);
+            return;
         }
         request.getRequestDispatcher(url).forward(request, response);
 

@@ -5,6 +5,7 @@
 package controller;
 
 import dao.StockDAO;
+import dao.TransactionDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import dao.UserDAO;
 import dto.Stock;
+import dto.Transaction;
 import dto.User;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpSession;
@@ -22,8 +24,7 @@ import java.util.ArrayList;
  *
  * @author admin
  */
-
-@WebServlet(name="Login", urlPatterns={"/LoginController"})
+@WebServlet(name = "LoginController", urlPatterns = {"/LoginController"})
 public class LoginController extends HttpServlet {
 
     /**
@@ -51,7 +52,7 @@ public class LoginController extends HttpServlet {
                 request.setAttribute("stocks",stockList);
                 request.getRequestDispatcher("welcome.jsp").forward(request, response);
             } else {
-                request.setAttribute("MSG", "Incorrect UserID or Password");
+                request.setAttribute("error", "Incorrect UserID or Password");
                 request.getRequestDispatcher("login.jsp").forward(request, response);
             } 
         } catch (Exception e) {

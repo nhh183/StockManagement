@@ -13,6 +13,8 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Transaction List Page</title>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+
     </head>
     <body>
         <%
@@ -22,72 +24,94 @@
                 return;
             }
         %>
-        <h1>Welcome: <%= loginUser.getFullName() %></h1>
 
-        <form action="MainController" method="POST">
-            <button type="submit" name="action" value="Logout">Logout</button>
-            <input type="text" name="keyword" placeholder="Search"/>
-            <button type="submit" name="action" value="SearchTransaction">Search</button>
-        </form>
+        <!-- Thanh Menu -->
+        <div class="navbar">
+            <div class="left-menu">
+                <a href="stockList.jsp">Stock List</a>
+                <a href="alertList.jsp">Alert List</a>
+            </div>
+            <div class="right-menu">
+                <form action="MainController" method="POST" style="margin:0;">
+                    <input type="text" name="keyword" placeholder="Search"/>
+                    <button type="submit" name="action" value="SearchTransaction">Search</button>
+                </form>
+                <a href="MainController?action=Logout">Logout</a>
+            </div>
+        </div>
 
-        <a href="createTransaction.jsp">Create New Transaction</a><br/>
-        <a href="stockList.jsp">Go to Stock List</a><br/>
-        <a href="alertList.jsp">Go to Alert List</a><br/>
+        <!-- Lời chào căn giữa -->
+        <div class="container">
+            <div class="center-content">
+                <h1>Welcome: <%= loginUser.getFullName() %></h1>
+            </div>
 
-        <!-- Display messages -->
-        <%
-            String MSG = (String) request.getAttribute("MESSAGE");
-            String ERROR = (String) request.getAttribute("ERROR");
-            if (MSG != null) {
-        %>
-        <p style="color: green"><%= MSG %></p>
-        <% } else if (ERROR != null) { %>
-        <p style="color: red"><%= ERROR %></p>
-        <% } %>
 
-        <%
-            ArrayList<Transaction> list = (ArrayList<Transaction>) request.getAttribute("list");
-            if (list != null && !list.isEmpty()) {
-        %>
-        <table border="1">
-            <tr>
-                <th>No</th>
-                <th>User ID</th>
-                <th>Ticker</th>
-                <th>Type</th>
-                <th>Quantity</th>
-                <th>Price</th>
-                <th>Status</th>
-                    <% if ("AD".equals(loginUser.getRoleID())) { %>
-                <th>Function</th>
-                    <% } %>
-            </tr>
+            <!-- Hiển thị thông báo -->
             <%
-                int count = 0;
-                for (Transaction transaction : list) {
-                    count++;
+                String MSG = (String) session.getAttribute("MSG");
+                String ERROR = (String) session.getAttribute("ERROR");
+
+                session.removeAttribute("MSG");
+                session.removeAttribute("ERROR");
+                if (MSG != null) {
             %>
-            <tr>
-                <td><%= count %></td>
-                <td><%= transaction.getUserID() %></td>
-                <td><%= transaction.getTicker() %></td>
-                <td><%= transaction.getType() %></td>
-                <td><%= transaction.getQuantity() %></td>
-                <td><%= transaction.getPrice() %></td>
-                <td><%= transaction.getStatus() %></td>
-                <% if ("AD".equals(loginUser.getRoleID()) || loginUser.getUserID().equals(transaction.getUserID())) { %>
-                <td>
-                    <a href="MainController?action=updateTransactionPageController&id=<%= transaction.getId() %>">Update</a>
-                    <a href="deleteTransactionController?id=<%= transaction.getId() %>">Delete</a>
-                </td>
-                <% } %>
-            </tr>
+            <p class="msg-success"><%= MSG %></p>
+            <% } else if (ERROR != null) { %>
+            <p class="msg-error"><%= ERROR %></p>
             <% } %>
-        </table>
-        <% } else { %>
-        <p>No transactions found.</p>
-        <% } %>
+
+            <%
+                ArrayList<Transaction> list = (ArrayList<Transaction>) request.getAttribute("transactionList");
+                if (list != null && !list.isEmpty()) {
+            %>
+            <table class="transaction-table">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>User ID</th>
+                        <th>Ticker</th>
+                        <th>Type</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Status</th>                          
+                        <th>Function</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <%
+                        int count = 0;
+                        for (Transaction transaction : list) {
+                            count++;
+                    %>
+                    <tr>
+                        <td><%= count %></td>
+                        <td><%= transaction.getUserID() %></td>
+                        <td><%= transaction.getTicker() %></td>
+                        <td><%= transaction.getType() %></td>
+                        <td><%= transaction.getQuantity() %></td>
+                        <td><%= transaction.getPrice() %></td>
+                        <td><%= transaction.getStatus() %></td>
+                        <% if ("AD".equals(loginUser.getRoleID()) || loginUser.getUserID().equals(transaction.getUserID())) { %>
+                        <td>
+                            <a href="MainController?action=UpdateTransaction&id=<%= transaction.getId() %>">Update</a> /
+                            <a href="MainController?action=DeleteTransaction&id=<%= transaction.getId() %>" 
+                               onclick="return confirm('Are you sure you want to delete this transaction?')">Delete</a>
+                        </td>
+                        <% } %>
+                    </tr>
+                    <% } %>
+                </tbody>
+            </table>
+            <% } else { %>
+            <p class="no-transaction">No transactions found.</p>
+            <% } %>
+            <a href="addTransaction.jsp" class="btn-add">Add</a>
+        </div>
 
     </body>
+
+
 </html>
+
 

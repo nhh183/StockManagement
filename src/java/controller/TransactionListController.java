@@ -14,15 +14,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 
 /**
  *
  * @author User
  */
-@WebServlet(name = "deleteTransactionController", urlPatterns = {"/deleteTransactionController"})
-public class deleteTransactionController extends HttpServlet {
-
-    private static final String TRANSACTION_LIST_PAGE = "transactionList.jsp";
+@WebServlet(name = "TransactionListController", urlPatterns = {"/TransactionListController"})
+public class TransactionListController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,34 +35,20 @@ public class deleteTransactionController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
-        String url = TRANSACTION_LIST_PAGE;
-
-        User loginUser = (User) request.getSession().getAttribute("LOGIN_USER");
-        if (loginUser == null) {
-            response.sendRedirect("login.jsp");
-            return;
-        }
         try {
-            int id = Integer.parseInt(request.getParameter("id"));
-            TransactionDAO dao = new TransactionDAO();
-            Transaction transaction = dao.getTransactionByID(id);
-            if (transaction == null) {
-                request.setAttribute("ERROR", "Transaction not found.");
-            } else {
-                if (!transaction.getUserID().equals(loginUser.getUserID()) && !loginUser.getRoleID().equals("AD")) {
-                    request.setAttribute("ERROR", "You do not have permission to delete this transaction.");
-                } else if (dao.deleteTransaction(id)) {
-                    request.setAttribute("MSG", "Transaction deleted successfully.");
-                } else {
-                    request.setAttribute("ERROR", "Failed to delete the transaction.");
-                }
+            User loginUser = (User) request.getSession().getAttribute("USER");
+            if (loginUser == null) {
+                response.sendRedirect("login.jsp");
+                return;
             }
 
+            TransactionDAO transactionDAO = new TransactionDAO();
+            ArrayList<Transaction> list = transactionDAO.getTransactionList(loginUser.getUserID(), loginUser.getRoleID());
+            request.setAttribute("transactionList", list);
         } catch (Exception e) {
             request.setAttribute("ERROR", "An error occurred: " + e.getMessage());
         }
-        request.getRequestDispatcher(url).forward(request, response);
+        request.getRequestDispatcher("transactionList.jsp").forward(request, response);
 
     }
 

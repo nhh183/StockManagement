@@ -16,10 +16,14 @@
 </head>
 <body>
     <h2>Welcome <%= loginUser.getFullName() %>!</h2>
+<<<<<<< HEAD
+    <form action="MainController" method="get">
+=======
     <div class="menu">
         <form action="transactionList.jsp" method="get">
+>>>>>>> master
         <div class="button">
-           <input type="submit" value="View Transaction">
+            <button type="submit" name="action" value="TransactionList">View Transaction</button>
         </div>
        </form>
 
