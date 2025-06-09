@@ -21,11 +21,12 @@
             </div>
         </form>
 
-        <form action="alertList.jsp" method="get" >
-            <div class="button">
-                <input type="submit" value="View Alert">
-            </div>
-        </form>
+        <form action="MainController" method="get">
+    <div class="button">
+        <input type="submit" name="action" value="AlertList" />
+    </div>
+</form>
+
         <form action="MainController" method="get">
             <input type="hidden" name="action" value="SearchUser" />
             <button type="submit" class="button-green">User List</button>

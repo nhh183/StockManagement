@@ -3,97 +3,87 @@
     Created on : Jun 8, 2025, 4:59:14 PM
     Author     : loan1
 --%>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html" pageEncoding="UTF-8" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="dto.Alert" %>
 <%@ page import="dto.User" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Alert List</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
 <%
     User loginUser = (User) session.getAttribute("USER");
     if (loginUser == null) {
         response.sendRedirect("login.jsp");
         return;
     }
+
+    String MSG = (String) request.getAttribute("MSG");
+    if (MSG == null) {
+        MSG = (String) session.getAttribute("MSG");
+        session.removeAttribute("MSG");
+    }
+
+    String ERROR = (String) request.getAttribute("ERROR");
+    if (ERROR == null) {
+        ERROR = (String) session.getAttribute("ERROR");
+        session.removeAttribute("ERROR");
+    }
+
+    String keyword = request.getParameter("keyword") != null ? request.getParameter("keyword") : "";
+    String filterDirection = request.getParameter("filterDirection") != null ? request.getParameter("filterDirection") : "";
+    String filterStatus = request.getParameter("filterStatus") != null ? request.getParameter("filterStatus") : "";
 %>
 
-<c:set var="loginUser" value="${sessionScope.USER}" />
-
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Alert List</title>
-    <style>
-        form {
-            margin: 20px auto;
-            width: 80%;
-        }
-        table {
-            width: 80%;
-            border-collapse: collapse;
-            margin: 0 auto;
-        }
-        table, th, td {
-            border: 1px solid #ccc;
-        }
-        th, td {
-            padding: 8px;
-            text-align: center;
-        }
-        .btn {
-            padding: 6px 10px;
-            margin: 5px;
-        }
-        .search-box {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        select, input[type="text"] {
-            padding: 5px;
-        }
-    </style>
-</head>
-<body>
-   <form action="transactionList.jsp" method="get">
-        <div class="button">
-           <input type="submit" value="View Transaction">
-        </div>
-   </form>
-
-   <form action="alertList.jsp" method="get" >
-        <div class="button">
-            <input type="submit" value="View Alert">
-        </div>
-   </form>
-    <form action="userList.jsp" method="get" >
-        <div class="button">
-            <input type="submit" value="View User">
-        </div>
-   </form>s
-   <form action="MainController" method="get">
-        <div class="button">
-            <input type="submit" name="action" value="Logout">
-         </div>
-   </form>
-    <h2 style="text-align:center;">Investment Alerts</h2>
-
-    <div class="search-box">
-        <form action="MainController" method="get">
-            <input type="text" name="search" value="${sessionScope.QUERY}" placeholder="Search by ticker">
-<!--            <select name="direction">
-                <option value="">All Directions</option>
-                <option value="increase" ${sessionScope.DIRECTION == 'increase' ? 'selected' : ''}>Increase</option>
-                <option value="decrease" ${sessionScope.DIRECTION == 'decrease' ? 'selected' : ''}>Decrease</option>
-            </select>
-            <select name="status">
-                <option value="">All Statuses</option>
-                <option value="active" ${sessionScope.STATUS == 'active' ? 'selected' : ''}>Active</option>
-                <option value="inactive" ${sessionScope.STATUS == 'inactive' ? 'selected' : ''}>Inactive</option>
-            </select>-->
-            <input type="submit" name="action" value="SearchAlert" class="btn">
-        </form>
+<nav class="navbar">
+    <div class="left-menu">
+        <a href="stockList.jsp">Stock List</a>
+        <a href="MainController?action=TransactionList">Transaction List</a>
+        <a href="MainController?action=AlertList">Alert List</a>
     </div>
+    <div class="right-menu">
+        <a href="MainController?action=Logout">Logout</a>
+    </div>
+</nav>
 
-    <table>
+<div class="container">
+    <h2>Welcome: <%= loginUser.getFullName() %></h2>
+
+    <% if (MSG != null) { %>
+        <p class="msg-success"><%= MSG %></p>
+    <% } else if (ERROR != null) { %>
+        <p class="msg-error"><%= ERROR %></p>
+    <% } %>
+
+    <!-- Search + Filter Form -->
+    <form action="MainController" method="GET" style="margin-bottom: 15px;">
+        <input type="text" name="keyword" value="<%= keyword %>" placeholder="Search keyword..." />
+
+        <select name="filterDirection">
+            <option value="">--Direction--</option>
+            <option value="increase" <%= "increase".equals(filterDirection) ? "selected" : "" %>>Increase</option>
+            <option value="decrease" <%= "decrease".equals(filterDirection) ? "selected" : "" %>>Decrease</option>
+        </select>
+
+        <select name="filterStatus">
+            <option value="">--Status--</option>
+            <option value="active" <%= "active".equals(filterStatus) ? "selected" : "" %>>Active</option>
+            <option value="inactive" <%= "inactive".equals(filterStatus) ? "selected" : "" %>>Inactive</option>
+            <option value="pending" <%= "pending".equals(filterStatus) ? "selected" : "" %>>Pending</option>
+        </select>
+
+        <button type="submit" name="action" value="SearchAlert">Search</button>
+    </form>
+
+    <%
+        ArrayList<Alert> list = (ArrayList<Alert>) request.getAttribute("alertList");
+        if (list != null && !list.isEmpty()) {
+    %>
+    <table border="1">
         <thead>
             <tr>
                 <th>No</th>
@@ -101,38 +91,43 @@
                 <th>Threshold</th>
                 <th>Direction</th>
                 <th>Status</th>
-                <th>Owner</th>
-                <th>Action</th>
+                <th>Function</th>
             </tr>
         </thead>
         <tbody>
-            <c:if test="${empty sessionScope.alerts}">
-                <tr><td colspan="7">No alerts found.</td></tr>
-            </c:if>
-            <c:forEach var="alert" items="${sessionScope.alerts}" varStatus="loop">
-                <tr>
-                    <td>${loop.count}</td>
-                    <td>${alert.ticker}</td>
-                    <td>${alert.threshold}</td>
-                    <td>${alert.direction}</td>
-                    <td>${alert.status}</td>
-                    <td>${alert.userID}</td>
-                    <td>
-                        <c:if test="${loginUser.userID == alert.userID || loginUser.roleID == 'AD'}">
-                            <c:if test="${alert.status == 'inactive'}">
-                                <a href="MainController?action=UpdateAlert&alertID=${alert.alertID}">Update</a>
-                                <a href="MainController?action=DeleteAlert&alertID=${alert.alertID}" 
-                                   onclick="return confirm('Are you sure to delete?')">Delete</a>
-                            </c:if>
-                        </c:if>
-                    </td>
-                </tr>
-            </c:forEach>
+            <%
+                int count = 0;
+                for (Alert alert : list) {
+                    count++;
+            %>
+            <tr>
+                <td><%= count %></td>
+                <td><%= alert.getTicker() %></td>
+                <td><%= alert.getThreshold() %></td>
+                <td><%= alert.getDirection() %></td>
+                <td><%= alert.getStatus() %></td>
+                <td>
+                    <%
+                        boolean canEdit = loginUser.getUserID().equals(alert.getUserID()) &&
+                                          "inactive".equalsIgnoreCase(alert.getStatus());
+                        if ("AD".equals(loginUser.getRoleID()) || canEdit) {
+                    %>
+                    <a href="MainController?action=UpdateAlert&id=<%= alert.getAlertID() %>">Update</a> /
+                    <a href="MainController?action=DeleteAlert&id=<%= alert.getAlertID() %>"
+                       onclick="return confirm('Delete this alert?')">Delete</a>
+                    <% } else { %>
+                    N/A
+                    <% } %>
+                </td>
+            </tr>
+            <% } %>
         </tbody>
     </table>
+    <% } else { %>
+        <p>No alerts found.</p>
+    <% } %>
 
-    <form action="MainController" method="get" style="text-align:center; margin-top:20px;">
-        <input type="submit" name="action" value="CreateAlert" class="btn" />
-    </form>
+    <a href="addAlert.jsp" class="btn-add">Add New Alert</a>
+</div>
 </body>
 </html>
