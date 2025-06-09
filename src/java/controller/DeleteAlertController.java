@@ -16,45 +16,46 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
 
 /**
  *
  * @author loan1
  */
-@WebServlet(name="DeleteAlertController", urlPatterns={"/DeleteAlertController"})
+@WebServlet(name = "DeleteAlertController", urlPatterns = {"/DeleteAlertController"})
 public class DeleteAlertController extends HttpServlet {
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int alertID = Integer.parseInt(request.getParameter("alertID"));
+
         HttpSession session = request.getSession();
-        String userID = ((dto.User) session.getAttribute("USER")).getUserID();
+        User loginUser = (User) session.getAttribute("USER");
 
-        AlertDAO dao = new AlertDAO();
-        Alert alert = dao.getAlertById(alertID);
-        if (!alert.getUserID().equals(userID)) {
-            request.setAttribute("ERROR", "Permission denied.");
-        } else if (!alert.getStatus().equals("inactive")) {
-            request.setAttribute("ERROR", "Only inactive alerts can be deleted.");
-        } else {
-            try {
-                dao.delete(alertID);
-                request.setAttribute("MESSAGE", "Alert deleted successfully.");
-            } catch (Exception e) {
-                request.setAttribute("ERROR", "Delete failed.");
+        try {
+            int alertID = Integer.parseInt(request.getParameter("id"));
+            AlertDAO dao = new AlertDAO();
+
+            if (!dao.canEditOrDeleteAlert(alertID, loginUser.getUserID())) {
+                request.setAttribute("ERROR", "You do not have permission to delete this alert.");
+            } else {
+                boolean deleted = dao.deleteAlert(alertID);
+                if (deleted) {
+                    request.setAttribute("MSG", "Alert deleted successfully.");
+                } else {
+                    request.setAttribute("ERROR", "Failed to delete alert.");
+                }
             }
+
+            ArrayList<Alert> alertList = dao.getAlertList(loginUser.getUserID(), loginUser.getRoleID());
+            request.setAttribute("alertList", alertList);
+
+            request.getRequestDispatcher("alertList.jsp").forward(request, response);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("ERROR", "System error.");
+            request.getRequestDispatcher("alertList.jsp").forward(request, response);
         }
-
-        request.setAttribute("alerts", dao.getAlertList(userID));
-        request.getRequestDispatcher("alertList.jsp").forward(request, response);
-    }
-
-    @Override protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    @Override protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
     }
 }

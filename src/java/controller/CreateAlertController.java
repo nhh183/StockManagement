@@ -5,6 +5,7 @@
 
 package controller;
 import dao.AlertDAO;
+import dao.StockDAO;
 import dto.User;
 import dto.Alert;
 import java.io.IOException;
@@ -24,64 +25,56 @@ import java.util.ArrayList;
 @WebServlet(name = "CreateAlertController", urlPatterns = {"/CreateAlertController"})
 public class CreateAlertController extends HttpServlet {
 
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("USER") == null) {
-            response.sendRedirect("login.jsp");
-            return;
-        }
-
-        User user = (User) session.getAttribute("USER");
-        String ticker = request.getParameter("ticker");
-        String direction = request.getParameter("direction");
-        String strThreshold = request.getParameter("threshold");
-
-        if (ticker == null || direction == null || strThreshold == null ||
-            ticker.trim().isEmpty() || direction.trim().isEmpty() || strThreshold.trim().isEmpty()) {
-            request.setAttribute("ERROR", "All fields are required.");
-            request.getRequestDispatcher("addAlert.jsp").forward(request, response);
-            return;
-        }
-
-        try {
-            float threshold = Float.parseFloat(strThreshold);
-            if (threshold <= 0) {
-                request.setAttribute("ERROR", "Threshold must be positive.");
-                request.getRequestDispatcher("addAlert.jsp").forward(request, response);
-                return;
-            }
-
-            Alert alert = new Alert(0, user.getUserID(), ticker, threshold, direction, "inactive");
-            AlertDAO dao = new AlertDAO();
-            dao.create(alert);
-
-            ArrayList<Alert> updatedList = dao.getAlertList(user.getUserID());
-            session.setAttribute("alerts", updatedList);
-            session.setAttribute("QUERY", "");
-            session.setAttribute("DIRECTION", "");
-            session.setAttribute("STATUS", "");
-            response.sendRedirect("MainController?action=SearchAlert");
-
-        } catch (NumberFormatException e) {
-            request.setAttribute("ERROR", "Threshold must be a number.");
-            request.getRequestDispatcher("addAlert.jsp").forward(request, response);
-        } catch (Exception e) {
-            e.printStackTrace();
-            request.setAttribute("ERROR", "Error creating alert.");
-            request.getRequestDispatcher("addAlert.jsp").forward(request, response);
-        }
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession();
+        try {
+            User loginUser = (User) session.getAttribute("USER");
+
+            if (loginUser == null) {
+                response.sendRedirect("login.jsp");
+                return;
+            }
+
+            String ticker = request.getParameter("ticker").trim().toUpperCase();
+            String thresholdStr = request.getParameter("threshold").trim();
+            String direction = request.getParameter("direction").trim();
+            String status = request.getParameter("status").trim();
+
+            if (ticker.isEmpty() || thresholdStr.isEmpty() || direction.isEmpty() || status.isEmpty()) {
+                session.setAttribute("ERROR", "All fields are required.");
+                response.sendRedirect("MainController?action=AlertList");
+                return;
+            }
+
+            float threshold = Float.parseFloat(thresholdStr);
+
+            StockDAO stockDAO = new StockDAO();
+            if (!stockDAO.isTickerExist(ticker)) {
+                session.setAttribute("ERROR", "Ticker does not exist in stock list.");
+                response.sendRedirect("MainController?action=AlertList");
+                return;
+            }
+
+            String paddedTicker = String.format("%-6s", ticker);
+
+            Alert alert = new Alert(0, loginUser.getUserID(), paddedTicker, threshold, direction, status);
+
+            AlertDAO dao = new AlertDAO();
+            boolean success = dao.createAlert(alert);
+
+            if (success) {
+                session.setAttribute("MSG", "Alert created successfully!");
+            } else {
+                session.setAttribute("ERROR", "Failed to create alert (DB error).");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            session.setAttribute("ERROR", "System error: " + e.getMessage());
+        }
+
+        response.sendRedirect("MainController?action=AlertList");
     }
 }

@@ -57,6 +57,9 @@ public class MainController extends HttpServlet {
     private final String CREATE_TRANSACTION_CONTROLLER = "CreateTransactionController";
     private final String UPDATE_TRANSACTION_CONTROLLER = "UpdateTransactionController";
     private final String DELETE_TRANSACTION_CONTROLLER = "DeleteTransactionController";
+    
+    private final String ALERT_LIST = "AlertList";
+    private final String ALERT_LIST_CONTROLLER = "AlertListController";
 
     private final String SEARCH_ALERT_CONTROLLER = "SearchAlertController";
     private final String CREATE_ALERT_CONTROLLER = "CreateAlertController";
@@ -124,6 +127,14 @@ public class MainController extends HttpServlet {
                 case DELETE_ALERT:
                     url = DELETE_ALERT_CONTROLLER;
                     break;
+                case SEARCH_ALERT:
+                    url = SEARCH_ALERT_CONTROLLER;
+                    break;
+                case ALERT_LIST:
+                url = ALERT_LIST_CONTROLLER;
+                break;
+
+
             }
 
         } catch (Exception ex) {

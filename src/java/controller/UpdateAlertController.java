@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,50 +26,64 @@ import java.util.logging.Logger;
  */
 @WebServlet(name="UpdateAlertController", urlPatterns={"/UpdateAlertController"})
 public class UpdateAlertController extends HttpServlet {
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int alertID = Integer.parseInt(request.getParameter("alertID"));
-        float threshold = Float.parseFloat(request.getParameter("threshold"));
-        String direction = request.getParameter("direction");
-        String status = request.getParameter("status");
-
-        AlertDAO dao = new AlertDAO();
-        Alert alert = dao.getAlertById(alertID);
-        HttpSession session = request.getSession();
-        String userID = ((dto.User) session.getAttribute("USER")).getUserID();
-
-        if (!alert.getUserID().equals(userID)) {
-            request.setAttribute("ERROR", "Permission denied.");
-            request.getRequestDispatcher("alertList.jsp").forward(request, response);
-        } else if (!alert.getStatus().equals("inactive")) {
-            request.setAttribute("ERROR", "Only inactive alerts can be edited.");
-            request.getRequestDispatcher("alertList.jsp").forward(request, response);
-        } else {
-            try {
-                alert.setThreshold(threshold);
-                alert.setDirection(direction);
-                alert.setStatus(status);
-                dao.update(alert);
-                request.setAttribute("MESSAGE", "Alert updated successfully.");
-                request.setAttribute("alerts", dao.getAlertList(userID));
-                request.getRequestDispatcher("alertList.jsp").forward(request, response);
-            } catch (Exception e) {
-                request.setAttribute("ERROR", "Update failed.");
-                request.getRequestDispatcher("alertList.jsp").forward(request, response);
-            }
+        try {
+            int alertID = Integer.parseInt(request.getParameter("id"));
+            Alert alert = new AlertDAO().getAlertByID(alertID);
+            request.setAttribute("ALERT", alert);
+            request.getRequestDispatcher("updateAlert.jsp").forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("alertList.jsp");
         }
     }
 
-    @Override protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        int alertID = Integer.parseInt(request.getParameter("alertID"));
-        Alert alert = new AlertDAO().getAlertById(alertID);
-        request.setAttribute("alert", alert);
-        request.getRequestDispatcher("updateAlert.jsp").forward(request, response);
-    }
+    @Override
+protected void doPost(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    HttpSession session = request.getSession();
+    User loginUser = (User) session.getAttribute("USER");
 
-    @Override protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
+    try {
+        int alertID = Integer.parseInt(request.getParameter("alertID"));
+        AlertDAO dao = new AlertDAO();
+        Alert currentAlert = dao.getAlertByID(alertID);
+
+        boolean isAllowed = loginUser.getRoleID().equals("AD") ||
+                            loginUser.getUserID().equals(currentAlert.getUserID());
+
+        if (!isAllowed) {
+            request.setAttribute("ERROR", "You do not have permission to edit this alert.");
+        } else {
+            String ticker = request.getParameter("ticker").trim();
+            float threshold = Float.parseFloat(request.getParameter("threshold"));
+            String direction = request.getParameter("direction").trim();
+            String status = request.getParameter("status").trim();
+
+            Alert updatedAlert = new Alert(alertID, loginUser.getUserID(), ticker, threshold, direction, status);
+            boolean updated = dao.updateAlert(updatedAlert);
+
+            if (updated) {
+                request.setAttribute("MSG", "Alert updated successfully.");
+            } else {
+                request.setAttribute("ERROR", "Update failed.");
+            }
+        }
+
+        // Lấy lại danh sách alert để hiển thị
+        ArrayList<Alert> alertList = dao.getAlertList(loginUser.getUserID(), loginUser.getRoleID());
+        request.setAttribute("alertList", alertList);
+
+        // Forward về trang hiển thị danh sách
+        request.getRequestDispatcher("alertList.jsp").forward(request, response);
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        request.setAttribute("ERROR", "System error or invalid input.");
+        request.getRequestDispatcher("alertList.jsp").forward(request, response);
     }
+}
 }

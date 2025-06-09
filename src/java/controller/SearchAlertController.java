@@ -30,40 +30,36 @@ public class SearchAlertController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        HttpSession session = request.getSession();
+        User loginUser = (User) session.getAttribute("USER");
+
+        if (loginUser == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
 
         try {
-            HttpSession session = request.getSession();
-            User loginUser = (User) session.getAttribute("USER");
+            String keyword = request.getParameter("keyword") != null ? request.getParameter("keyword").trim() : "";
+            String filterDirection = request.getParameter("filterDirection") != null ? request.getParameter("filterDirection").trim() : "";
+            String filterStatus = request.getParameter("filterStatus") != null ? request.getParameter("filterStatus").trim() : "";
 
-            if (loginUser == null) {
-                response.sendRedirect("login.jsp");
-                return;
+            AlertDAO dao = new AlertDAO();
+            ArrayList<Alert> list = dao.advancedSearchAlert(keyword, filterDirection, filterStatus, loginUser.getUserID(), loginUser.getRoleID());
+
+            request.setAttribute("alertList", list);
+            request.setAttribute("keyword", keyword);
+            request.setAttribute("filterDirection", filterDirection);
+            request.setAttribute("filterStatus", filterStatus);
+
+            if (list.isEmpty()) {
+                request.setAttribute("ERROR", "No alerts found matching your criteria.");
             }
 
-            String userID = loginUser.getUserID();
-            String query = request.getParameter("search") != null ? request.getParameter("search") : "";
-            String direction = request.getParameter("direction") != null ? request.getParameter("direction") : "";
-            String status = request.getParameter("status") != null ? request.getParameter("status") : "";
-
-            // Lưu thông tin tìm kiếm để hiển thị lại
-            session.setAttribute("QUERY", query);
-            session.setAttribute("DIRECTION", direction);
-            session.setAttribute("STATUS", status);
-
-            // Lấy danh sách cảnh báo
-            AlertDAO dao = new AlertDAO();
-            ArrayList<Alert> alerts = dao.search(userID, query, direction, status);
-
-            // Gán danh sách vào session
-            session.setAttribute("alerts", alerts);
-
-            // Chuyển tiếp về trang JSP
-            request.getRequestDispatcher("alertList.jsp").forward(request, response);
-
         } catch (Exception e) {
-            e.printStackTrace();
-            response.sendRedirect("error.jsp"); // Trang báo lỗi nếu cần
+            request.setAttribute("ERROR", "An error occurred: " + e.getMessage());
         }
+
+        request.getRequestDispatcher("alertList.jsp").forward(request, response);
     }
 
     @Override
@@ -76,5 +72,10 @@ public class SearchAlertController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
+    }
+
+    @Override
+    public String getServletInfo() {
+        return "SearchAlertController handles advanced alert searching with filters";
     }
 }
