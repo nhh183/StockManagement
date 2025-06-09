@@ -6,8 +6,8 @@ package controller;
  */
 
 import dao.AlertDAO;
-import dto.Users;
-import dto.Alerts;
+import dto.User;
+import dto.Alert;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -21,43 +21,40 @@ import jakarta.servlet.http.HttpSession;
  *
  * @author loan1
  */
-@WebServlet(urlPatterns={"/DeleteAlertController"})
+@WebServlet(name="DeleteAlertController", urlPatterns={"/DeleteAlertController"})
 public class DeleteAlertController extends HttpServlet {
-   
-   protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        HttpSession session = request.getSession();
-        Users loginUser = (Users) session.getAttribute("LOGIN_USER");
-
-        if (loginUser == null) {
-            response.sendRedirect("login.jsp");
-            return;
-        }
-
         int alertID = Integer.parseInt(request.getParameter("alertID"));
+        HttpSession session = request.getSession();
+        String userID = ((dto.User) session.getAttribute("USER")).getUserID();
 
-        try {
-            AlertDAO dao = new AlertDAO();
-            Alerts alert = dao.getAlertById(alertID);
-
-            if (!loginUser.getUserID().equals(alert.getUserID()) && !"AD".equals(loginUser.getRoleID())) {
-                request.setAttribute("ERROR", "Không có quyền.");
-            } else if (!"inactive".equals(alert.getStatus())) {
-                request.setAttribute("ERROR", "Chỉ được xóa khi trạng thái là inactive.");
-            } else {
-                boolean success = dao.deleteAlert(alertID);
-                if (success) {
-                    request.setAttribute("MESSAGE", "Xoá thành công.");
-                } else {
-                    request.setAttribute("ERROR", "Xoá thất bại.");
-                }
+        AlertDAO dao = new AlertDAO();
+        Alert alert = dao.getAlertById(alertID);
+        if (!alert.getUserID().equals(userID)) {
+            request.setAttribute("ERROR", "Permission denied.");
+        } else if (!alert.getStatus().equals("inactive")) {
+            request.setAttribute("ERROR", "Only inactive alerts can be deleted.");
+        } else {
+            try {
+                dao.delete(alertID);
+                request.setAttribute("MESSAGE", "Alert deleted successfully.");
+            } catch (Exception e) {
+                request.setAttribute("ERROR", "Delete failed.");
             }
-
-            request.getRequestDispatcher("SearchAlertController").forward(request, response);
-        } catch (Exception e) {
-            request.setAttribute("ERROR", "Lỗi hệ thống: " + e.getMessage());
-            request.getRequestDispatcher("SearchAlertController").forward(request, response);
         }
+
+        request.setAttribute("alerts", dao.getAlertList(userID));
+        request.getRequestDispatcher("alertList.jsp").forward(request, response);
+    }
+
+    @Override protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
+    @Override protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
     }
 }

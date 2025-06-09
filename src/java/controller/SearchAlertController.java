@@ -6,8 +6,8 @@ package controller;
  */
 
 import dao.AlertDAO;
-import dto.Users;
-import dto.Alerts;
+import dto.User;
+import dto.Alert;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -16,43 +16,65 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
  * @author loan1
  */
-@WebServlet(urlPatterns={"/SearchAlertController"})
+
+@WebServlet(name = "SearchAlertController", urlPatterns = {"/SearchAlertController"})
 public class SearchAlertController extends HttpServlet {
-  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        HttpSession session = request.getSession();
-        Users loginUser = (Users) session.getAttribute("USER");
-
-        if (loginUser == null) {
-            response.sendRedirect("login.jsp");
-            return;
-        }
-
-        String keyword = request.getParameter("keyword") != null ? request.getParameter("keyword") : "";
+        response.setContentType("text/html;charset=UTF-8");
 
         try {
-            AlertDAO dao = new AlertDAO();
-            List<Alerts> list;
+            HttpSession session = request.getSession();
+            User loginUser = (User) session.getAttribute("USER");
 
-            if ("AD".equals(loginUser.getRoleID())) {
-                list = dao.searchAll(keyword);
-            } else {
-                list = dao.getAlertsByUser(loginUser.getUserID(), keyword);
+            if (loginUser == null) {
+                response.sendRedirect("login.jsp");
+                return;
             }
 
-            request.setAttribute("ALERT_LIST", list);
-            request.setAttribute("KEYWORD", keyword);
-        } catch (Exception e) {
-            request.setAttribute("ERROR", "Lỗi khi tìm kiếm: " + e.getMessage());
-        }
+            String userID = loginUser.getUserID();
+            String query = request.getParameter("search") != null ? request.getParameter("search") : "";
+            String direction = request.getParameter("direction") != null ? request.getParameter("direction") : "";
+            String status = request.getParameter("status") != null ? request.getParameter("status") : "";
 
-        request.getRequestDispatcher("alertList.jsp").forward(request, response);
+            // Lưu thông tin tìm kiếm để hiển thị lại
+            session.setAttribute("QUERY", query);
+            session.setAttribute("DIRECTION", direction);
+            session.setAttribute("STATUS", status);
+
+            // Lấy danh sách cảnh báo
+            AlertDAO dao = new AlertDAO();
+            ArrayList<Alert> alerts = dao.search(userID, query, direction, status);
+
+            // Gán danh sách vào session
+            session.setAttribute("alerts", alerts);
+
+            // Chuyển tiếp về trang JSP
+            request.getRequestDispatcher("alertList.jsp").forward(request, response);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp"); // Trang báo lỗi nếu cần
+        }
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
     }
 }

@@ -42,6 +42,7 @@ public class MainController extends HttpServlet {
     private final String UPDATE_ALERT = "UpdateAlert";
     private final String DELETE_ALERT = "DeleteAlert";
     private final String CREATE_ALERT = "CreateAlert";
+    private final String SEARCH_ALERT = "SearchAlert";
 
     private final String LOGIN_CONTROLLER = "LoginController";
     private final String LOGOUT_CONTROLLER = "LogoutController";

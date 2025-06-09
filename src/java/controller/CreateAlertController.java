@@ -5,8 +5,8 @@
 
 package controller;
 import dao.AlertDAO;
-import dto.Users;
-import dto.Alerts;
+import dto.User;
+import dto.Alert;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -15,66 +15,73 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
 
 /**
  *
  * @author loan1
  */
-@WebServlet(name="CreateAlertController", urlPatterns={"/CreateAlertController"})
+@WebServlet(name = "CreateAlertController", urlPatterns = {"/CreateAlertController"})
 public class CreateAlertController extends HttpServlet {
-   
-    /** 
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        HttpSession session = request.getSession();
-        Users loginUser = (Users) session.getAttribute("LOGIN_USER");
-
-        if (loginUser == null) {
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("USER") == null) {
             response.sendRedirect("login.jsp");
             return;
         }
 
+        User user = (User) session.getAttribute("USER");
         String ticker = request.getParameter("ticker");
         String direction = request.getParameter("direction");
-        String status = "inactive";
-        double threshold;
+        String strThreshold = request.getParameter("threshold");
 
-        try {
-            threshold = Double.parseDouble(request.getParameter("threshold"));
-            if (threshold <= 0) throw new NumberFormatException();
-        } catch (NumberFormatException e) {
-            request.setAttribute("ERROR", "Ngưỡng phải là số dương.");
-            request.getRequestDispatcher("addAlert.jsp").forward(request, response);
-            return;
-        }
-
-        if (!direction.equals("increase") && !direction.equals("decrease")) {
-            request.setAttribute("ERROR", "Hướng không hợp lệ.");
+        if (ticker == null || direction == null || strThreshold == null ||
+            ticker.trim().isEmpty() || direction.trim().isEmpty() || strThreshold.trim().isEmpty()) {
+            request.setAttribute("ERROR", "All fields are required.");
             request.getRequestDispatcher("addAlert.jsp").forward(request, response);
             return;
         }
 
         try {
-            Alerts alert = new Alerts(0, loginUser.getUserID(), ticker, threshold, direction, status);
-            boolean success = new AlertDAO().createAlert(alert);
-
-            if (success) {
-                request.setAttribute("MESSAGE", "Thành công.");
-                response.sendRedirect("SearchAlertController");
-            } else {
-                request.setAttribute("ERROR", "Thất bại.");
+            float threshold = Float.parseFloat(strThreshold);
+            if (threshold <= 0) {
+                request.setAttribute("ERROR", "Threshold must be positive.");
                 request.getRequestDispatcher("addAlert.jsp").forward(request, response);
+                return;
             }
+
+            Alert alert = new Alert(0, user.getUserID(), ticker, threshold, direction, "inactive");
+            AlertDAO dao = new AlertDAO();
+            dao.create(alert);
+
+            ArrayList<Alert> updatedList = dao.getAlertList(user.getUserID());
+            session.setAttribute("alerts", updatedList);
+            session.setAttribute("QUERY", "");
+            session.setAttribute("DIRECTION", "");
+            session.setAttribute("STATUS", "");
+            response.sendRedirect("MainController?action=SearchAlert");
+
+        } catch (NumberFormatException e) {
+            request.setAttribute("ERROR", "Threshold must be a number.");
+            request.getRequestDispatcher("addAlert.jsp").forward(request, response);
         } catch (Exception e) {
-            request.setAttribute("ERROR", "Lỗi hệ thống: " + e.getMessage());
+            e.printStackTrace();
+            request.setAttribute("ERROR", "Error creating alert.");
             request.getRequestDispatcher("addAlert.jsp").forward(request, response);
         }
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
     }
 }

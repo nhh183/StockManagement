@@ -7,7 +7,7 @@ package controller;
 import dao.TransactionDAO;
 import dto.Transaction;
 import dto.User;
-import dto.Users;
+import dto.User;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
