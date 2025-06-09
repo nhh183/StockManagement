@@ -8,14 +8,14 @@ package dto;
  *
  * @author loan1
  */
-public class Alerts {
+public class Alert {
     private int alertID;
     private String userID, ticker, direction, status;
-    private double threshold;
+    private float threshold;
 
-    public Alerts() {}
+    public Alert() {}
 
-    public Alerts(int alertID, String userID, String ticker, double threshold, String direction, String status) {
+    public Alert(int alertID, String userID, String ticker, float threshold, String direction, String status) {
         this.alertID = alertID;
         this.userID = userID;
         this.ticker = ticker;
@@ -44,7 +44,7 @@ public class Alerts {
             return status;
         }
 
-        public double getThreshold() {
+        public float getThreshold() {
             return threshold;
         }
 
@@ -68,7 +68,7 @@ public class Alerts {
             this.status = status;
         }
 
-        public void setThreshold(double threshold) {
+        public void setThreshold(float threshold) {
             this.threshold = threshold;
         }
 

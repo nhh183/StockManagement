@@ -6,8 +6,8 @@ package controller;
  */
 
 import dao.AlertDAO;
-import dto.Users;
-import dto.Alerts;
+import dto.User;
+import dto.Alert;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -16,56 +16,59 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author loan1
  */
-@WebServlet(urlPatterns={"/UpdateAlertController"})
+@WebServlet(name="UpdateAlertController", urlPatterns={"/UpdateAlertController"})
 public class UpdateAlertController extends HttpServlet {
-   protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        HttpSession session = request.getSession();
-        Users  loginUser = (Users) session.getAttribute("LOGIN_USER");
-
-        if (loginUser == null) {
-            response.sendRedirect("login.jsp");
-            return;
-        }
-
         int alertID = Integer.parseInt(request.getParameter("alertID"));
-        double threshold = Double.parseDouble(request.getParameter("threshold"));
+        float threshold = Float.parseFloat(request.getParameter("threshold"));
         String direction = request.getParameter("direction");
         String status = request.getParameter("status");
 
-        try {
-            AlertDAO dao = new AlertDAO();
-            Alerts alert = dao.getAlertById(alertID);
+        AlertDAO dao = new AlertDAO();
+        Alert alert = dao.getAlertById(alertID);
+        HttpSession session = request.getSession();
+        String userID = ((dto.User) session.getAttribute("USER")).getUserID();
 
-            if (!loginUser.getUserID().equals(alert.getUserID()) && !"AD".equals(loginUser.getRoleID())) {
-                request.setAttribute("ERROR", "Không có quyền.");
-            } else if (!"inactive".equals(alert.getStatus())) {
-                request.setAttribute("ERROR", "Chỉ chỉnh sửa khi trạng thái là inactive.");
-            } else if (threshold <= 0 || (!"increase".equals(direction) && !"decrease".equals(direction))) {
-                request.setAttribute("ERROR", "Dữ liệu không hợp lệ.");
-            } else {
+        if (!alert.getUserID().equals(userID)) {
+            request.setAttribute("ERROR", "Permission denied.");
+            request.getRequestDispatcher("alertList.jsp").forward(request, response);
+        } else if (!alert.getStatus().equals("inactive")) {
+            request.setAttribute("ERROR", "Only inactive alerts can be edited.");
+            request.getRequestDispatcher("alertList.jsp").forward(request, response);
+        } else {
+            try {
                 alert.setThreshold(threshold);
                 alert.setDirection(direction);
                 alert.setStatus(status);
-
-                boolean success = dao.updateAlert(alert);
-                if (success) {
-                    request.setAttribute("MESSAGE", "Cập nhật thành công.");
-                } else {
-                    request.setAttribute("ERROR", "Cập nhật thất bại.");
-                }
+                dao.update(alert);
+                request.setAttribute("MESSAGE", "Alert updated successfully.");
+                request.setAttribute("alerts", dao.getAlertList(userID));
+                request.getRequestDispatcher("alertList.jsp").forward(request, response);
+            } catch (Exception e) {
+                request.setAttribute("ERROR", "Update failed.");
+                request.getRequestDispatcher("alertList.jsp").forward(request, response);
             }
-
-            request.getRequestDispatcher("SearchAlertController").forward(request, response);
-        } catch (Exception e) {
-            request.setAttribute("ERROR", "Lỗi hệ thống: " + e.getMessage());
-            request.getRequestDispatcher("SearchAlertController").forward(request, response);
         }
+    }
+
+    @Override protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int alertID = Integer.parseInt(request.getParameter("alertID"));
+        Alert alert = new AlertDAO().getAlertById(alertID);
+        request.setAttribute("alert", alert);
+        request.getRequestDispatcher("updateAlert.jsp").forward(request, response);
+    }
+
+    @Override protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
     }
 }
