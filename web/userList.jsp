@@ -7,125 +7,173 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>User List</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            background-color: #f4f6f8;
-        }
-        .container {
-            display: flex;
-            min-height: 100vh;
-        }
-        .sidebar {
-            width: 220px;
-            background-color: #2c3e50;
-            color: #fff;
-            padding: 20px;
-        }
-        .sidebar h2 {
-            margin-bottom: 20px;
-        }
-        .sidebar a {
-            color: #ccc;
-            text-decoration: none;
-            display: block;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
-        .sidebar a:hover,
-        .sidebar a.active {
-            background-color: #34495e;
-            color: #fff;
-        }
-        .main-content {
-            flex: 1;
-            padding: 30px;
-            background-color: #fff;
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .header a {
-            background-color: #e74c3c;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 4px;
-            text-decoration: none;
-        }
-        .header a:hover {
-            background-color: #c0392b;
-        }
-        form {
-            margin: 20px 0;
-        }
-        input, select {
-            padding: 6px;
-            margin: 5px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-        }
-        .inputSearch {
-            width: 200px;
-        }
-        .searchBtn, .button-green, .button-red {
-            padding: 6px 10px;
-            border: none;
-            border-radius: 4px;
-            color: white;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .searchBtn {
-            background-color: #3498db;
-        }
-        .button-green {
-            background-color: #2ecc71;
-        }
-        .button-red {
-            background-color: #e74c3c;
-        }
-        .searchBtn:hover {
-            background-color: #2980b9;
-        }
-        .button-green:hover {
-            background-color: #27ae60;
-        }
-        .button-red:hover {
-            background-color: #c0392b;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            padding: 10px;
-            border: 1px solid #ddd;
-            text-align: left;
-        }
-        th {
-            background-color: #3498db;
-            color: white;
-        }
-        .actions button {
-            margin-right: 5px;
-        }
-        .msg {
-            margin-top: 10px;
-            padding: 10px;
-            border-radius: 4px;
-        }
-        .success {
-            color: #155724;
-            background-color: #d4edda;
-        }
-        .error {
-            color: #721c24;
-            background-color: #f8d7da;
-        }
+        /* Reset & base styles */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f9ff;
+}
+
+/* Layout */
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    background-color: #3498db;
+    color: white;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.sidebar h2 {
+    margin-top: 0;
+}
+
+.sidebar a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 10px 0;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sidebar a.active,
+.sidebar a:hover {
+    background-color: #2980b9;
+    padding-left: 10px;
+}
+
+/* Main content */
+.main-content {
+    flex: 1;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #fff;
+    overflow-y: auto;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header a {
+    background-color: #e74c3c;
+    color: white;
+    padding: 8px 12px;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.header a:hover {
+    background-color: #c0392b;
+}
+
+/* Table styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+thead {
+    background-color: #ecf6fd;
+    font-weight: bold;
+}
+
+tbody tr:hover {
+    background-color: #f4f4f4;
+}
+
+/* Form styles */
+form input[type="text"],
+form input[type="password"],
+form select {
+    padding: 8px;
+    margin: 5px 0;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+form button {
+    padding: 8px 14px;
+    margin: 5px 0;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.button-green {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.button-red {
+    background-color: #e74c3c;
+    color: white;
+}
+
+form .actions button {
+    margin-right: 8px;
+}
+
+.butDelete {
+    background-color: #e74c3c;
+    color: white;
+}
+
+/* Message feedback */
+.msg.success {
+    color: green;
+}
+
+.msg.error {
+    color: red;
+}
+
+#msg {
+    transition: opacity 0.5s ease-in-out;
+}
+
+/* Create user form */
+#createForm {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f1faff;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+#createForm .form-group {
+    margin-bottom: 10px;
+}
+
+#createForm label {
+    display: block;
+    font-weight: bold;
+}
+
+.inputSearch {
+    padding: 6px;
+    font-size: 14px;
+    width: 200px;
+}
+
     </style>
 </head>
 <body>

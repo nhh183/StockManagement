@@ -3,6 +3,7 @@
     Created on : Jun 8, 2025, 4:59:14 PM
     Author     : loan1
 --%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="dto.Alert" %>
@@ -112,7 +113,9 @@
                                           "inactive".equalsIgnoreCase(alert.getStatus());
                         if ("AD".equals(loginUser.getRoleID()) || canEdit) {
                     %>
-                    <a href="MainController?action=UpdateAlert&id=<%= alert.getAlertID() %>">Update</a> /
+                    <% if ("inactive".equals(alert.getStatus())) { %>
+                        <a href="MainController?action=UpdateAlert&id=<%= alert.getAlertID() %>">Update</a> /
+                    <% } %>
                     <a href="MainController?action=DeleteAlert&id=<%= alert.getAlertID() %>"
                        onclick="return confirm('Delete this alert?')">Delete</a>
                     <% } else { %>

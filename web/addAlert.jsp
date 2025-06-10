@@ -13,6 +13,21 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <div>
+        
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <nav class="navbar">
         <div class="left-menu">
             <a href="stockList.jsp">Stock List</a>

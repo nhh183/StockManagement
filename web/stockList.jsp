@@ -6,7 +6,83 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<link rel="stylesheet" href="style.css"/>
+<style>
+    /* Container phần stocks */
+.stocks {
+    flex: 1;
+    padding: 30px;
+    background-color: white;
+    border-radius: 8px;
+    margin: 0;
+    height: 100%;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+/* Form search */
+.stocks form {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.stocks input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.stocks button {
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.stocks button:hover {
+    background-color: #2980b9;
+}
+
+/* Table style */
+.stocks table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.stocks th, .stocks td {
+    border: 1px solid #ddd;
+    padding: 12px 10px;
+    text-align: left;
+}
+
+.stocks thead {
+    background-color: #f0f0f0;
+}
+
+.stocks tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* Links in actions */
+.stocks a {
+    color: #3498db;
+    text-decoration: none;
+    margin: 0 4px;
+}
+
+.stocks a:hover {
+    text-decoration: underline;
+}
+
+</style>
 <div class="stocks">
     <form action="MainController" method="POST">
         <input type="text" name="search" placeholder="Search by ticker, name or sector...">
