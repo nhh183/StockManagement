@@ -23,7 +23,6 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet(name = "DeleteTransactionController", urlPatterns = {"/DeleteTransactionController"})
 public class DeleteTransactionController extends HttpServlet {
 
-    private static final String TRANSACTION_LIST_PAGE = "transactionList.jsp";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -64,7 +63,7 @@ public class DeleteTransactionController extends HttpServlet {
         } catch (Exception e) {
             session.setAttribute("ERROR", "An error occurred: " + e.getMessage());
         }
-        response.sendRedirect("MainController?action=TransactionList");
+        response.sendRedirect("SearchTransactionController");
 
     }
 

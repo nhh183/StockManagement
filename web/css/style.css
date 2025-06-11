@@ -24,10 +24,15 @@ body {
     margin: 0 10px;
     text-decoration: none;
     font-weight: bold;
+    padding: 8px 12px; 
+    border-radius: 4px; 
+    transition: background-color 0.2s ease;
+    display: inline-block; 
 }
 
 .navbar a:hover {
-    text-decoration: underline;
+    background-color: #2980b9;
+    text-decoration: none;
 }
 
 /* Container */
@@ -50,6 +55,24 @@ body {
     font-weight: bold;
 }
 
+.welcome-content {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: #1565c0;
+    margin-top: 0;
+}
+
+.center-content {
+    text-align: center;
+    margin: 10px 0;
+}
+
+.center-content h2 {
+    font-size: 24px;
+    color: #2c3e50;
+    font-weight: 600;
+}
 /* Form */
 form input[type="text"],
 form select {
@@ -110,5 +133,103 @@ tbody tr:hover {
 }
 
 .btn-add:hover {
+    background-color: #2980b9;
+}
+
+.search-box {
+    margin: 20px 0;
+    width: 100%;
+}
+
+.search-box form {
+    display: flex;
+    width: 100%;
+}
+
+.search-box input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.search-box button {
+    padding: 10px 16px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    margin-left: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.search-box button:hover {
+    background-color: #2980b9;
+}
+
+/* Function Links in Table */
+.transaction-table td a {
+    color: #3498db; /* Đổi màu tùy ý: xanh biển */
+    text-decoration: none; /* Bỏ gạch chân */
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.transaction-table td a:hover {
+    color: #e74c3c; /* Màu khi hover (ví dụ: đỏ) */
+    text-decoration: underline; /* Có thể thêm gạch chân khi hover */
+}
+
+
+/* Form add/update... */
+.custom-form {
+    background-color: #ffffff;
+    padding: 25px 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+    max-width: 500px;
+    margin: 40px auto 0 auto; /* Căn giữa và cách navbar 40px */
+}
+
+.custom-form h2 {
+    text-align: center;
+    color: #3498db;
+    margin-bottom: 10px;
+}
+
+.custom-form label {
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.custom-form input,
+.custom-form select {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.custom-form button {
+    margin-top: 10px;
+    padding: 10px 16px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    align-self: center;
+}
+
+.custom-form button:hover {
     background-color: #2980b9;
 }

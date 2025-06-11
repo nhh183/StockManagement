@@ -33,20 +33,23 @@
                 <a href="MainController?action=SearchUser">User List</a>
             </div>
             <div class="right-menu">
-                <form action="MainController" method="POST" style="margin:0;">
-                    <input type="text" name="keyword" placeholder="Search"/>
-                    <button type="submit" name="action" value="SearchTransaction">Search</button>
-                </form>
                 <a href="MainController?action=Logout">Logout</a>
             </div>
         </div>
 
         <!-- Lời chào căn giữa -->
+        <div class="welcome-content">
+            <h1>Welcome: <%= loginUser.getFullName() %></h1>
+        </div>
+        
         <div class="container">
-            <div class="center-content">
-                <h1>Welcome: <%= loginUser.getFullName() %></h1>
+            <div class="center-content"><h2>Transaction List</h2></div>
+            <div class="search-box">
+                <form action="MainController" method="POST" style="margin:0;">
+                    <input type="text" name="keyword" placeholder="Search"/>
+                    <button type="submit" name="action" value="SearchTransaction">Search</button>
+                </form>
             </div>
-
 
             <!-- Hiển thị thông báo -->
             <%

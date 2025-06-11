@@ -24,7 +24,7 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet(name = "CreateTransactionController", urlPatterns = {"/CreateTransactionController"})
 public class CreateTransactionController extends HttpServlet {
 
-    private static final String TRANSACTION_LIST_CONTROLLER = "TransactionListController";
+    private static final String SEARCH_TRANSACTION_CONTROLLER = "SearchTransactionController";
     private static final String CREATE_TRANSACTION_PAGE = "addTransaction.jsp";
 
     /**
@@ -71,7 +71,7 @@ public class CreateTransactionController extends HttpServlet {
 
                 if (dao.createTransaction(transaction)) {
                     session.setAttribute("MSG", "Transaction created successfully.");
-                    response.sendRedirect(TRANSACTION_LIST_CONTROLLER);
+                    response.sendRedirect(SEARCH_TRANSACTION_CONTROLLER);
                     return;
                 } else {
                     request.setAttribute("ERROR", "Failed to create transaction.");
@@ -80,7 +80,7 @@ public class CreateTransactionController extends HttpServlet {
             }
         } catch (Exception e) {
             session.setAttribute("ERROR", "An error occurred: " + e.getMessage());
-            response.sendRedirect(TRANSACTION_LIST_CONTROLLER);
+            response.sendRedirect(SEARCH_TRANSACTION_CONTROLLER);
             return;
         }
         request.getRequestDispatcher(url).forward(request, response);

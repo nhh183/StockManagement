@@ -123,7 +123,7 @@ body {
             <div class="menu">
                 <form action="MainController" method="get">
                     <div class="button">
-                        <button type="submit" name="action" value="TransactionList">View Transaction</button>
+                        <button type="submit" name="action" value="SearchTransaction">View Transaction</button>
                     </div>
                 </form>
                 <form action="MainController" method="get">

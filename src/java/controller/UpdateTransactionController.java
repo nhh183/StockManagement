@@ -24,7 +24,7 @@ import java.util.ArrayList;
 @WebServlet(name = "UpdateTransactionController", urlPatterns = {"/UpdateTransactionController"})
 public class UpdateTransactionController extends HttpServlet {
 
-    private static final String TRANSACTION_LIST_CONTROLLER = "TransactionListController";
+    private static final String SEARCH_TRANSACTION_CONTROLLER = "SearchTransactionController";
     private static final String UPDATE_TRANSACTION_PAGE = "updateTransaction.jsp";
 
     /**
@@ -53,11 +53,11 @@ public class UpdateTransactionController extends HttpServlet {
             Transaction transaction = dao.getTransactionByID(id);
             if (transaction == null) {
                 session.setAttribute("ERROR", "Transaction is not available!");
-                url = TRANSACTION_LIST_CONTROLLER;
+                url = SEARCH_TRANSACTION_CONTROLLER;
             } else {
                 if (!transaction.getUserID().equals(loginUser.getUserID()) && !loginUser.getRoleID().equals("AD")) {
                     session.setAttribute("ERROR", "You are not authorized to perform this action.");
-                    url = TRANSACTION_LIST_CONTROLLER;
+                    url = SEARCH_TRANSACTION_CONTROLLER;
                 } else {
                     int quantity = Integer.parseInt(request.getParameter("quantity"));
                     float price = Float.parseFloat(request.getParameter("price"));
@@ -75,7 +75,7 @@ public class UpdateTransactionController extends HttpServlet {
                         transaction.setStatus(status);
                         if (dao.updateTransaction(transaction)) {
                             session.setAttribute("MSG", "Transaction updated successfully!");
-                            url = TRANSACTION_LIST_CONTROLLER;
+                            url = SEARCH_TRANSACTION_CONTROLLER;
                         } else {
                             request.setAttribute("ERROR", "Update Transaction failed!");
                         }
@@ -86,7 +86,7 @@ public class UpdateTransactionController extends HttpServlet {
 
         } catch (Exception e) {
             session.setAttribute("ERROR", "An error occurred: " + e.getMessage());
-            url = TRANSACTION_LIST_CONTROLLER;
+            url = SEARCH_TRANSACTION_CONTROLLER;
         }
 
         if (url.equals(UPDATE_TRANSACTION_PAGE)) {
@@ -122,7 +122,7 @@ public class UpdateTransactionController extends HttpServlet {
             Transaction transaction = dao.getTransactionByID(id);
             if (transaction == null) {
                 session.setAttribute("ERROR", "Transaction is not availble!");
-                url = TRANSACTION_LIST_CONTROLLER;
+                url = SEARCH_TRANSACTION_CONTROLLER;
             } else {
                 request.setAttribute("TRANSACTION", transaction);
             }
