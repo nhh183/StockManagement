@@ -42,7 +42,7 @@
 
 <nav class="navbar">
     <div class="left-menu">
-        <a href="stockList.jsp">Stock List</a>
+        <a href="MainController?action=search&search=">Stock List</a>
         <a href="MainController?action=TransactionList">Transaction List</a>
         <a href="MainController?action=AlertList">Alert List</a>
     </div>

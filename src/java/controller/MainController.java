@@ -44,6 +44,11 @@ public class MainController extends HttpServlet {
     private final String CREATE_ALERT = "CreateAlert";
     private final String SEARCH_ALERT = "SearchAlert";
 
+    private final String UPDATE_HISTOICAL_PRICE = "UpdateHistoricalPrice";
+    private final String DELETE_HISTOICAL_PRICE = "DeleteHistoricalPrice";
+    private final String CREATE_HISTOICAL_PRICE = "CreateHistoricalPrice";
+    private final String SEARCH_HISTOICAL_PRICE = "SearchHistoricalPrice";
+
     private final String LOGIN_CONTROLLER = "LoginController";
     private final String LOGOUT_CONTROLLER = "LogoutController";
 
@@ -57,7 +62,7 @@ public class MainController extends HttpServlet {
     private final String CREATE_TRANSACTION_CONTROLLER = "CreateTransactionController";
     private final String UPDATE_TRANSACTION_CONTROLLER = "UpdateTransactionController";
     private final String DELETE_TRANSACTION_CONTROLLER = "DeleteTransactionController";
-    
+
     private final String ALERT_LIST = "AlertList";
     private final String ALERT_LIST_CONTROLLER = "AlertListController";
 
@@ -65,6 +70,14 @@ public class MainController extends HttpServlet {
     private final String CREATE_ALERT_CONTROLLER = "CreateAlertController";
     private final String UPDATE_ALERT_CONTROLLER = "UpdateAlertController";
     private final String DELETE_ALERT_CONTROLLER = "DeleteAlertController";
+
+    private final String HISTORICAL_PRICE_LIST = "HistoricalPriceList";
+    private final String HISTORICAL_PRICE_LIST_CONTROLLER = "HistoricalPriceListController";
+
+    private static final String CREATE_HISTOICAL_PRICE_CONTROLLER = "CreateHistoricalPriceController";
+    private static final String DELETE_HISTOICAL_PRICE_CONTROLLER = "DeleteHistoricalPriceController";
+    private static final String SEARCH_HISTOICAL_PRICE_CONTROLLER = "SearchHistoricalPriceController";
+    private static final String UPDATE_HISTOICAL_PRICE_CONTROLLER = "UpdateHistoricalPriceController";
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -131,9 +144,24 @@ public class MainController extends HttpServlet {
                     url = SEARCH_ALERT_CONTROLLER;
                     break;
                 case ALERT_LIST:
-                url = ALERT_LIST_CONTROLLER;
-                break;
+                    url = ALERT_LIST_CONTROLLER;
+                    break;
+                case CREATE_HISTOICAL_PRICE:
+                    url = CREATE_HISTOICAL_PRICE_CONTROLLER;
+                    break;
+                case DELETE_HISTOICAL_PRICE:
+                    url = DELETE_HISTOICAL_PRICE_CONTROLLER;
+                    break;
+                case UPDATE_HISTOICAL_PRICE:
+                    url = UPDATE_HISTOICAL_PRICE_CONTROLLER;
+                    break;
+                case SEARCH_HISTOICAL_PRICE:
+                    url = SEARCH_HISTOICAL_PRICE_CONTROLLER;
+                    break;
 
+                case HISTORICAL_PRICE_LIST:
+                    url = HISTORICAL_PRICE_LIST_CONTROLLER;
+                    break;
 
             }
 

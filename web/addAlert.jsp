@@ -12,22 +12,7 @@
     <title>Add Alert</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
-    <div>
-        
-    </div>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+<body>    
     <nav class="navbar">
         <div class="left-menu">
             <a href="stockList.jsp">Stock List</a>
