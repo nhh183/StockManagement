@@ -1,11 +1,11 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@page import="dto.User"%>
+<%@page import="dto_business_rating.Rating"%>
 <!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>User List</title>
+    <title>Rating List</title>
     <style>
         /* Reset & base styles */
 body {
@@ -100,7 +100,7 @@ tbody tr:hover {
 
 /* Form styles */
 form input[type="text"],
-form input[type="password"],
+form input[type="number"],
 form select {
     padding: 8px;
     margin: 5px 0;
@@ -150,7 +150,7 @@ form .actions button {
     transition: opacity 0.5s ease-in-out;
 }
 
-/* Create user form */
+/* Create rating form */
 #createForm {
     margin-top: 20px;
     padding: 15px;
@@ -178,11 +178,11 @@ form .actions button {
 </head>
 <body>
 <%
-    String search = request.getParameter("search");
+    String search = request.getParameter("isFind");
     if (search == null) {
         search = "";
     }
-    User loginUser = (User) session.getAttribute("USER");
+    dto.User loginUser = (dto.User) session.getAttribute("USER");
     if (loginUser == null) {
         response.sendRedirect("login.jsp");
         return;
@@ -194,9 +194,9 @@ form .actions button {
         <a href="MainController?action=search">Stock List</a>
         <a href="MainController?action=SearchTransaction">Transaction List</a>
         <a href="MainController?action=AlertList">Alert List</a>
-        <a href ="MainController?action=SearchRating">Rating List</a>
         <% if ("AD".equals(loginUser.getRoleID())) { %>
-            <a class="active" href="MainController?action=SearchUser">User List</a>
+            <a href="MainController?action=SearchUser">User List</a>
+            <a class="active" href="MainController?action=SearchRating">Rating List</a>
         <% } %>
     </div>
 
@@ -212,41 +212,38 @@ form .actions button {
             <div class="function">
                 <form action="MainController">
                     Search 
-                    <input type="text" class="inputSearch" name="search" value="<%= search %>" placeholder="Search"/>
-                    <button type="submit" class="searchBtn" name="action" value="SearchUser">Search</button>
+                    <input type="text" class="inputSearch" name="isFind" value="<%= search %>" placeholder="Search"/>
+                    <button type="submit" class="searchBtn" name="action" value="SearchRating">Search</button>
                 </form>
 
                 <button id="showCreateForm" class="button-green" onclick="toggleCreateForm()">Create</button>
 
                 <div id="createForm" style="display: none;">
-                    <h3>Create New User</h3><hr>
+                    <h3>Create New Rating</h3><hr>
                     <form action="MainController" method="POST">
-                        <input type="hidden" name="action" value="CreateUser"/>
+                        <input type="hidden" name="action" value="CreateRating"/>
                         <div class="form-group">
                             <label for="userID">User ID:</label>
                             <input type="text" id="userID" name="userID" required>
                         </div>
                         <div class="form-group">
-                            <label for="fullName">Full Name:</label>
-                            <input type="text" id="fullName" name="fullName" required>
+                            <label for="ticker">Ticker:</label>
+                            <input type="text" id="ticker" name="ticker" required>
                         </div>
                         <div class="form-group">
-                            <label for="roleID">Role ID:</label>
-                            <select id="roleID" name="roleID" required>
-                                <option value="AD">Admin</option>
-                                <option value="NV">Staff</option>
-                            </select>
+                            <label for="score">Score (0-10):</label>
+                            <input type="number" id="score" name="score" min="0" max="10" required>
                         </div>
                         <div class="form-group">
-                            <label for="password">Password:</label>
-                            <input type="password" id="password" name="password" required>
+                            <label for="note">Note:</label>
+                            <input type="text" id="note" name="note" required>
                         </div>
                         <button type="submit" class="button-green">Create</button>
                     </form>
                 </div>
 
-                <c:if test="${empty listUser}">
-                    <p style="margin: 10px 0 0;">No matching users found!</p>
+                <c:if test="${empty ratingList}">
+                    <p style="margin: 10px 0 0;">No matching ratings found!</p>
                 </c:if>
             </div>
             <div class="message">
@@ -264,25 +261,31 @@ form .actions button {
         <table>
             <thead>
                 <tr>
-                    <th>No</th><th>User ID</th><th>Full Name</th><th>Role ID</th><th>Password</th><th>Action</th>
+                    <th>No</th>
+                    <th>User ID</th>
+                    <th>Ticker</th>
+                    <th>Score</th>
+                    <th>Note</th>
+                    <th>Created At</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                <c:forEach var="user" items="${listUser}" varStatus="st">
+                <c:forEach var="rating" items="${ratingList}" varStatus="st">
                     <tr>
                         <form action="MainController" method="POST">
                             <input type="hidden" name="search" value="<%= search %>"/>
+                            <input type="hidden" name="userID" value="${rating.userID}"/>
+                            <input type="hidden" name="ticker" value="${rating.ticker}"/>
                             <td>${st.count}</td>
-                            <td>
-                                <input type="hidden" name="userID" value="${user.userID}"/>
-                                ${user.userID}
-                            </td>
-                            <td>${user.fullName}</td>
-                            <td>${user.roleID}</td>
-                            <td>${user.password}</td>
+                            <td>${rating.userID}</td>
+                            <td>${rating.ticker}</td>
+                            <td>${rating.score}</td>
+                            <td>${rating.note}</td>
+                            <td>${rating.createdAt}</td>
                             <td class="actions">
-                                <button type="submit" name="action" value="UpdateUser">Update</button>
-                                <button class="butDelete" type="submit" name="action" value="DeleteUser" onclick="return confirm('Are you sure to delete this user?')">Delete</button>
+                                <button type="submit" name="action" value="UpdateRating">Update</button>
+                                <button class="butDelete" type="submit" name="action" value="DeleteRating" onclick="return confirm('Are you sure to delete this rating?')">Delete</button>
                             </td>
                         </form>
                     </tr>

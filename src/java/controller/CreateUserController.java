@@ -44,12 +44,13 @@ public class CreateUserController extends HttpServlet {
         try {
             userDAO.createUser(user); // thêm phương thức create vào UserDAO
             request.setAttribute("MSG", "User Created Successfully!");
+            // Load lại danh sách
+        request.getRequestDispatcher("userList.jsp").forward(request, response);
         } catch (Exception e) {
             request.setAttribute("MSG", "User Created Failed!");
         }
 
-        // Load lại danh sách
-        request.getRequestDispatcher("SearchUserController").forward(request, response);
+        
     }
     @Override
     public String getServletInfo() {

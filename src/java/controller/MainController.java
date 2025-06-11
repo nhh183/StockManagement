@@ -33,6 +33,15 @@ public class MainController extends HttpServlet {
     private static final String DELETE_USER = "DeleteUser";
     private static final String DELETE_USER_CONTROLLER = "DeleteUserController";
 
+    private static final String CREATE_RATING = "CreateRating";
+    private static final String CREATE_RATING_CONTROLLER = "CreateRatingController";
+    private static final String SEARCH_RATING = "SearchRating";
+    private static final String SEARCH_RATING_CONTROLLER = "SearchRatingController";
+    private static final String UPDATE_RATING = "UpdateRating";
+    private static final String UPDATE_RATING_CONTROLLER = "updateRating.jsp";
+    private static final String DELETE_RATING = "DeleteRating";
+    private static final String DELETE_RATING_CONTROLLER = "DeleteRatingController";
+
     private final String SEARCH_TRANSACTION = "SearchTransaction";
     private final String CREATE_TRANSACTION = "CreateTransaction";
     private final String UPDATE_TRANSACTION = "UpdateTransaction";
@@ -115,6 +124,18 @@ public class MainController extends HttpServlet {
                     break;
                 case DELETE_USER:
                     url = DELETE_USER_CONTROLLER;
+                    break;
+                case CREATE_RATING:
+                    url = CREATE_RATING_CONTROLLER;
+                    break;
+                case SEARCH_RATING:
+                    url = SEARCH_RATING_CONTROLLER;
+                    break;
+                case UPDATE_RATING:
+                    url = UPDATE_RATING_CONTROLLER;
+                    break;
+                case DELETE_RATING:
+                    url = DELETE_RATING_CONTROLLER;
                     break;
                 case TRANSACTION_LIST:
                     url = TRANSACTION_LIST_CONTROLLER;

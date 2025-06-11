@@ -19,19 +19,20 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "DeleteUserController", urlPatterns = {"/DeleteUserController"})
 public class DeleteUserController extends HttpServlet {
+
     private UserDAO userDAO = new UserDAO();
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String userID = request.getParameter("userID");
         try {
             userDAO.deleteUser(userID); // gọi DAO để xóa user
             request.setAttribute("MSG", "User deleted successfully!");
+            // load lại danh sách người dùng
+            request.getRequestDispatcher("userList.jsp").forward(request, response);
         } catch (Exception e) {
             request.setAttribute("MSG", "User deleted failed!");
         }
-
-        // load lại danh sách người dùng
-        request.getRequestDispatcher("SearchUserController").forward(request, response);
 
     }
 

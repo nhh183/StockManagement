@@ -1,11 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
-package controller;
+package controller_business_rating;
 
-import dao.UserDAO;
+import dao_business_rating.RatingDAO;
 import dto.User;
+import dto_business_rating.Rating;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,12 +10,16 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.time.LocalDateTime;
 
-@WebServlet(name = "UpdateUserController", urlPatterns = {"/UpdateUserController"})
-public class UpdateUserController extends HttpServlet {
-    private UserDAO userDAO = new UserDAO();
+@WebServlet(name = "UpdateRatingController", urlPatterns = {"/UpdateRatingController"})
+public class UpdateRatingController extends HttpServlet {
+
+    private RatingDAO dao = new RatingDAO();
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
 
     }
 
@@ -36,23 +37,23 @@ public class UpdateUserController extends HttpServlet {
             return;
         }
         request.setCharacterEncoding("UTF-8");
-        String search = request.getParameter("search");
+        String isFind = request.getParameter("isFind");
         try {
             String userID = request.getParameter("userID");
-            String fullName = request.getParameter("fullName");
-            String roleID = request.getParameter("roleID");
-            String password = request.getParameter("password");
-
-            User user = new User(userID, fullName, roleID, password);
-            boolean updated = userDAO.updateUser(user);
-
+            String ticker = request.getParameter("ticker");
+            int score = Integer.parseInt(request.getParameter("score"));
+            String note = request.getParameter("note");
+            Rating newRating = new Rating(userID, ticker, score, note, LocalDateTime.now());
+            
+            boolean updated = dao.updateRating(newRating);
+            System.out.println("hhehe");
             if (updated) {
                 request.setAttribute("MSG", "Updated successfully!");
             } else {
                 request.setAttribute("MSG", "Updated failed!");
             }
-            request.setAttribute("search", search);
-            request.getRequestDispatcher("userList.jsp").forward(request, response);
+            request.setAttribute("search", isFind);
+            request.getRequestDispatcher("ratingList.jsp").forward(request, response);
         } catch (Exception e) {
             log("Update error", e);
             e.printStackTrace();
