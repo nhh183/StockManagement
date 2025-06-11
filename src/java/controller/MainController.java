@@ -37,7 +37,6 @@ public class MainController extends HttpServlet {
     private final String CREATE_TRANSACTION = "CreateTransaction";
     private final String UPDATE_TRANSACTION = "UpdateTransaction";
     private final String DELETE_TRANSACTION = "DeleteTransaction";
-    private final String TRANSACTION_LIST = "TransactionList";
 
     private final String UPDATE_ALERT = "UpdateAlert";
     private final String DELETE_ALERT = "DeleteAlert";
@@ -52,7 +51,6 @@ public class MainController extends HttpServlet {
     private final String UPDATE_CONTROLLER = "UpdateController";
     private final String DELETE_CONTROLLER = "DeleteController";
 
-    private final String TRANSACTION_LIST_CONTROLLER = "TransactionListController";
     private final String SEARCH_TRANSACTION_CONTROLLER = "SearchTransactionController";
     private final String CREATE_TRANSACTION_CONTROLLER = "CreateTransactionController";
     private final String UPDATE_TRANSACTION_CONTROLLER = "UpdateTransactionController";
@@ -102,9 +100,6 @@ public class MainController extends HttpServlet {
                     break;
                 case DELETE_USER:
                     url = DELETE_USER_CONTROLLER;
-                    break;
-                case TRANSACTION_LIST:
-                    url = TRANSACTION_LIST_CONTROLLER;
                     break;
                 case SEARCH_TRANSACTION:
                     url = SEARCH_TRANSACTION_CONTROLLER;

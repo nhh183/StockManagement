@@ -12,9 +12,10 @@
         <!-- Giả sử có navbar ở đây nếu cần -->
         <nav class="navbar">
             <div class="left-menu">
-                <a href="MainController?action=TransactionList">Transaction List</a>
-                <a href="stockList.jsp">Stock List</a>
-                <a href="alertList.jsp">Alert List</a>
+                <a href="MainController?action=SearchTransaction">Transaction List</a>
+                <a href="MainController?action=search&search">Stock List</a>
+                <a href="MainController?action=SearchAlert">Alert List</a>
+                <a href="MainController?action=SearchUser">User List</a>
             </div>
             <div class="right-menu">
                 <a href="MainController?action=Logout">Logout</a>

@@ -28,8 +28,9 @@
         <!-- Thanh Menu -->
         <div class="navbar">
             <div class="left-menu">
-                <a href="stockList.jsp">Stock List</a>
-                <a href="alertList.jsp">Alert List</a>
+                <a href="MainController?action=search&search">Stock List</a>
+                <a href="MainController?action=SearchAlert">Alert List</a>
+                <a href="MainController?action=SearchUser">User List</a>
             </div>
             <div class="right-menu">
                 <form action="MainController" method="POST" style="margin:0;">
